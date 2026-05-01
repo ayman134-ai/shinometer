@@ -3,206 +3,160 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>مقياس الشناه برو | محلل الجمال والأنساب</title>
+    <title>مقياس الشناه برو | VIP Skin Lab</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #0a0a0f;
-            --card: #14141f;
+            --bg: #050508;
+            --card-bg: rgba(18,18,28,0.75);
             --gold: #d4af37;
+            --gold-light: #f0d060;
             --text: #e0d6c2;
             --sub: #a09080;
-            --border: #2a2530;
+            --border: rgba(212,175,55,0.25);
             --red: #c0392b;
-            --green: #27ae60;
+            --green: #2ecc71;
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{
             background: var(--bg);
             color: var(--text);
-            font-family: 'Segoe UI', Tahoma, Geneva, sans-serif;
-            min-height: 100vh;
-            padding: 10px;
-            direction: rtl;
+            font-family: 'Cairo', sans-serif;
+            min-height: 100vh; display: flex; justify-content: center; align-items: center;
+            padding: 16px; direction: rtl;
+            overflow-x: hidden;
+        }
+        #particles-js {
+            position: fixed; top:0; left:0; width:100%; height:100%; z-index:0;
+            pointer-events: none;
         }
         .container {
-            max-width: 500px;
-            margin: 0 auto;
-            background: var(--card);
-            border-radius: 20px;
-            padding: 20px 14px;
+            position: relative; z-index:1;
+            max-width: 480px; width:100%; background: var(--card-bg);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-radius: 28px; padding: 24px 16px;
             border: 1px solid var(--border);
-            box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+            box-shadow: 0 25px 60px rgba(0,0,0,0.7), 0 0 30px rgba(212,175,55,0.15);
             text-align: center;
         }
-        .gold-text { color: var(--gold); font-weight: bold; }
-        .badge {
-            background: #1a1020;
-            color: var(--gold);
-            font-size: 11px;
-            padding: 4px 10px;
-            border-radius: 20px;
-            display: inline-block;
-            margin: 4px;
-            border: 1px solid var(--gold);
-        }
-        .tabs {
-            display: flex;
-            gap: 6px;
-            margin: 12px 0;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-        .tab {
-            background: #1a1a25;
-            border: 1px solid var(--border);
-            color: var(--sub);
-            padding: 8px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-        .tab.active {
-            background: var(--gold);
-            color: #000;
-            font-weight: bold;
-            border-color: var(--gold);
-        }
-        .panel { display: none; }
-        .panel.active { display: block; }
-
-        .upload-zone {
-            background: #1a1a25;
-            border: 2px dashed var(--border);
-            border-radius: 16px;
-            padding: 24px 14px;
-            cursor: pointer;
-            transition: 0.3s;
-            margin: 10px 0;
-            position: relative;
-        }
-        .upload-zone:hover { border-color: var(--gold); }
-        .upload-zone img { max-width: 100%; max-height: 240px; border-radius: 12px; display: none; }
-        .upload-zone .icon { font-size: 44px; margin-bottom: 6px; }
-        .upload-zone .sub { font-size: 11px; color: var(--sub); }
-
-        .btn {
-            background: var(--gold);
-            color: #000;
-            border: none;
-            padding: 13px;
-            border-radius: 12px;
-            font-size: 15px;
-            font-weight: bold;
-            cursor: pointer;
-            width: 100%;
-            margin: 8px 0;
-            transition: 0.3s;
-        }
-        .btn:active { transform: scale(0.96); }
-        .btn:disabled { opacity: 0.4; pointer-events: none; }
-        .btn.red { background: var(--red); color: #fff; }
-
-        .progress-wrap {
-            display: none;
-            background: #1a1a25;
-            border-radius: 12px;
-            height: 20px;
-            margin: 12px 0;
-            overflow: hidden;
+        .gold-text{ color: var(--gold); font-weight: bold; }
+        .badge{
+            background: rgba(212,175,55,0.1); color: var(--gold); font-size: 11px;
+            padding: 4px 12px; border-radius: 20px; display: inline-block; margin: 4px;
             border: 1px solid var(--border);
         }
-        .progress-fill {
-            height: 100%;
-            width: 0%;
-            background: linear-gradient(90deg, var(--gold), #f1c40f);
-            transition: width 0.2s;
-            border-radius: 12px;
+        .tabs{ display:flex; gap:8px; margin:16px 0; flex-wrap:wrap; justify-content:center; }
+        .tab{
+            background: rgba(255,255,255,0.05); border:1px solid var(--border); color:var(--sub);
+            padding:8px 14px; border-radius: 24px; font-size:13px; cursor:pointer; transition:0.3s;
+            backdrop-filter: blur(5px);
         }
-        .progress-text { font-size: 12px; color: var(--gold); margin: 4px 0; }
+        .tab.active{ background: var(--gold); color:#000; font-weight:700; border-color:var(--gold); }
+        .panel{ display:none; }
+        .panel.active{ display:block; }
 
-        .result-box {
-            background: #1a1420;
-            border: 1px solid var(--gold);
-            border-radius: 16px;
-            padding: 18px;
-            margin: 14px 0;
-            display: none;
+        .upload-zone{
+            background: rgba(255,255,255,0.03); border:2px dashed var(--border); border-radius:20px;
+            padding:28px 16px; cursor:pointer; transition:0.3s; margin:12px 0; position:relative;
         }
-        .big-score { font-size: 58px; font-weight: 900; color: var(--gold); }
-        .category { font-size: 24px; font-weight: bold; margin: 6px 0; }
-        .comment {
-            font-size: 14px;
-            margin-top: 10px;
-            padding: 12px;
-            background: #1a1a20;
-            border-radius: 10px;
-            border-right: 3px solid var(--gold);
-            line-height: 1.6;
+        .upload-zone:hover{ border-color:var(--gold); background:rgba(212,175,55,0.03); }
+        .upload-zone img{ max-width:100%; max-height:260px; border-radius:14px; display:none; }
+        .upload-zone .icon{ font-size:48px; margin-bottom:8px; }
+        .btn{
+            background: linear-gradient(135deg, var(--gold), #b8942e);
+            color:#000; border:none; padding:14px; border-radius:14px; font-size:16px;
+            font-weight:700; cursor:pointer; width:100%; margin:10px 0; transition:0.3s;
+            letter-spacing:1px; box-shadow: 0 8px 25px rgba(212,175,55,0.25);
         }
-        .blood-bar {
-            background: #1a1a25;
-            border-radius: 10px;
-            height: 14px;
-            margin: 8px 0;
-            overflow: hidden;
-        }
-        .blood-fill {
-            height: 100%;
-            background: var(--red);
-            border-radius: 10px;
-            transition: width 0.5s;
-        }
+        .btn:active{ transform:scale(0.96); }
+        .btn:disabled{ opacity:0.4; pointer-events:none; }
+        .btn.red{ background: linear-gradient(135deg, #c0392b, #e74c3c); box-shadow: 0 8px 25px rgba(192,57,43,0.3); color:#fff; }
 
-        .leaderboard {
-            background: #1a1a25;
-            border-radius: 14px;
-            padding: 12px;
-            margin: 10px 0;
-            text-align: right;
+        .progress-wrap{
+            display:none; background:rgba(255,255,255,0.05); border-radius:14px; height:22px;
+            margin:14px 0; overflow:hidden; border:1px solid var(--border);
         }
-        .leaderboard .entry {
-            display: flex;
-            justify-content: space-between;
-            padding: 6px 0;
-            border-bottom: 1px solid var(--border);
-            font-size: 13px;
+        .progress-fill{
+            height:100%; width:0%; background: linear-gradient(90deg, var(--gold), var(--gold-light));
+            border-radius:14px; transition: width 0.3s;
         }
-        .leaderboard .entry:last-child { border-bottom: none; }
+        .progress-text{ font-size:12px; color:var(--gold); margin:6px 0; }
 
-        canvas { display: none; margin-top: 10px; border-radius: 12px; border: 1px solid var(--border); }
-        #fileInput, #fileInput2 { display: none; }
-        .vs { font-size: 28px; margin: 10px 0; }
+        .result-box{
+            background: rgba(212,175,55,0.05); border:1px solid var(--gold);
+            border-radius:20px; padding:20px; margin:16px 0; display:none;
+            box-shadow: 0 0 30px rgba(212,175,55,0.2);
+            animation: glowPulse 2s infinite;
+        }
+        @keyframes glowPulse {
+            0%{box-shadow:0 0 20px rgba(212,175,55,0.2)}
+            50%{box-shadow:0 0 40px rgba(212,175,55,0.4)}
+            100%{box-shadow:0 0 20px rgba(212,175,55,0.2)}
+        }
+        .big-score{ font-size:64px; font-weight:900; color:var(--gold); text-shadow:0 0 20px rgba(212,175,55,0.5); }
+        .category{ font-size:26px; font-weight:700; margin:6px 0; }
+        .comment{
+            font-size:15px; margin:12px 0; padding:14px; background:rgba(0,0,0,0.3);
+            border-radius:12px; border-right:3px solid var(--gold); line-height:1.7;
+        }
+        .blood-bar{
+            background:rgba(255,255,255,0.05); border-radius:10px; height:12px;
+            margin:8px 0; overflow:hidden;
+        }
+        .blood-fill{ height:100%; background:var(--red); border-radius:10px; transition: width 0.5s; }
 
-        .hidden { display: none; }
+        canvas{ display:none; margin:12px auto; border-radius:16px; border:1px solid var(--border); max-width:100%; }
+
+        .gender-btns{ display:flex; gap:10px; justify-content:center; margin:10px 0; }
+        .gender-btn{
+            background:rgba(255,255,255,0.05); border:1px solid var(--border); color:var(--sub);
+            padding:8px 18px; border-radius:20px; font-size:13px; cursor:pointer;
+        }
+        .gender-btn.active{ background:var(--gold); color:#000; border-color:var(--gold); }
+
+        .leaderboard{
+            background:rgba(255,255,255,0.03); border-radius:16px; padding:12px; margin:10px 0;
+            text-align:right; max-height:200px; overflow-y:auto;
+        }
+        .leaderboard .entry{
+            display:flex; justify-content:space-between; padding:6px 0;
+            border-bottom:1px solid var(--border); font-size:13px;
+        }
+        .vs{ font-size:32px; margin:10px 0; color:var(--gold); }
+
+        #fileInput, #fileInput2, #fileInput3{ display:none; }
     </style>
 </head>
 <body>
+
+<div id="particles-js"></div>
+
 <div class="container">
+    <h2 style="color:var(--gold); font-weight:900; font-size:24px; margin-bottom:4px;">🧬 مقياس الشناه برو</h2>
+    <div class="badge">تحليل جيني دقيق</div>
+    <div class="badge">كشف الأنساب 2.0</div>
+    <div class="badge">VIP Skin Lab</div>
 
-    <h2 style="color:var(--gold);">🧬 مقياس الشناه برو</h2>
-    <div class="badge">تحليل الجمال</div>
-    <div class="badge">كشف الأنساب</div>
-    <div class="badge">معركة الجمال</div>
-
-    <!-- الألسنة -->
     <div class="tabs">
         <div class="tab active" data-tab="scan">🔬 فحص فردي</div>
         <div class="tab" data-tab="battle">⚔️ معركة 1v1</div>
         <div class="tab" data-tab="hall">🏆 لوحة الشرف</div>
     </div>
 
-    <!-- ========== PANEL 1: فحص فردي ========== -->
+    <!-- SINGLE SCAN -->
     <div class="panel active" id="panel-scan">
-        <div class="upload-zone" onclick="document.getElementById('fileInput').click()">
-            <div id="placeholder1">
-                <div class="icon">📷</div>
-                <div>ارفع صورتك هنا</div>
-                <div class="sub">PNG, JPG, WEBP</div>
-            </div>
-            <img id="preview1" alt="معاينة">
+        <div class="gender-btns" id="genderBtns">
+            <span style="color:var(--sub);font-size:12px;">اختر جنسك:</span>
+            <span class="gender-btn active" data-gender="male">🧔🏻 رجال</span>
+            <span class="gender-btn" data-gender="female">👩🏻 بنت</span>
         </div>
-        <input type="file" id="fileInput" accept="image/*" onchange="handleFile(event, 1)">
+
+        <div class="upload-zone" onclick="document.getElementById('fileInput').click()">
+            <div id="placeholder1"><div class="icon">📷</div><div>ارفع صورتك هنا</div><div style="font-size:11px;color:var(--sub);">PNG, JPG, WEBP</div></div>
+            <img id="preview1" alt="preview">
+        </div>
+        <input type="file" id="fileInput" accept="image/*" onchange="handleFile(event,1)">
+
         <button class="btn" id="btnScan" disabled onclick="runScan()">🔬 حلل وجهي</button>
 
         <div class="progress-wrap" id="progressWrap">
@@ -216,41 +170,40 @@
             <div class="big-score" id="scoreVal">-</div>
             <div class="category" id="categoryVal"></div>
             <div class="comment" id="commentVal"></div>
-            <div style="margin-top:10px;color:var(--sub);font-size:11px;">نسبة العبد في دمك</div>
+            <div style="margin-top:12px;color:var(--sub);font-size:11px;">نسبة العبد في الدم</div>
             <div class="blood-bar"><div class="blood-fill" id="bloodFill" style="width:0%;"></div></div>
-            <div style="font-size:12px;" id="bloodText"></div>
-            <div style="font-size:11px;color:var(--sub);margin-top:6px;" id="detailsVal"></div>
-            <button class="btn" style="margin-top:10px;" onclick="saveToLeaderboard()">📋 سجل نتيجتي</button>
+            <div style="font-size:13px;color:var(--red);" id="bloodText"></div>
+            <button class="btn" style="margin-top:12px;" onclick="saveToLeaderboard()">📋 سجل نتيجتي</button>
         </div>
     </div>
 
-    <!-- ========== PANEL 2: معركة ========== -->
+    <!-- BATTLE -->
     <div class="panel" id="panel-battle">
         <div style="display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;">
             <div style="flex:1;min-width:120px;">
                 <div class="upload-zone" onclick="document.getElementById('fileInput2').click()">
                     <div id="placeholder2"><div class="icon">🧑</div><div>المتحدي 1</div></div>
-                    <img id="preview2" alt="متحدي 1">
+                    <img id="preview2" alt="p1">
                 </div>
             </div>
             <div class="vs">⚔️</div>
             <div style="flex:1;min-width:120px;">
                 <div class="upload-zone" onclick="document.getElementById('fileInput3').click()">
                     <div id="placeholder3"><div class="icon">🧑</div><div>المتحدي 2</div></div>
-                    <img id="preview3" alt="متحدي 2">
+                    <img id="preview3" alt="p2">
                 </div>
             </div>
         </div>
-        <input type="file" id="fileInput2" accept="image/*" onchange="handleFile(event, 2)">
-        <input type="file" id="fileInput3" accept="image/*" onchange="handleFile(event, 3)">
+        <input type="file" id="fileInput2" accept="image/*" onchange="handleFile(event,2)">
+        <input type="file" id="fileInput3" accept="image/*" onchange="handleFile(event,3)">
         <button class="btn" id="btnBattle" disabled onclick="runBattle()">⚔️ ابدأ المعركة</button>
         <div class="result-box" id="battleResult">
-            <div style="font-size:18px;font-weight:bold;" id="battleWinner"></div>
+            <div style="font-size:20px;font-weight:bold;" id="battleWinner"></div>
             <div class="comment" id="battleComment"></div>
         </div>
     </div>
 
-    <!-- ========== PANEL 3: لوحة الشرف/العار ========== -->
+    <!-- LEADERBOARD -->
     <div class="panel" id="panel-hall">
         <h3 style="color:var(--gold);margin:8px 0;">🏆 لوحة الشرف (الأجمل)</h3>
         <div class="leaderboard" id="hallFame"></div>
@@ -260,85 +213,123 @@
     </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
 <script>
-    // ========== GLOBALS ==========
+    // PARTICLES
+    particlesJS('particles-js', {
+        particles: {
+            number:{value:60,density:{enable:true,value_area:800}},
+            color:{value:'#d4af37'},
+            shape:{type:'circle'},
+            opacity:{value:0.4,random:true},
+            size:{value:2.5,random:true},
+            line_linked:{enable:true,distance:120,color:'#d4af37',opacity:0.2,width:1},
+            move:{enable:true,speed:0.8,random:true}
+        },
+        interactivity:{detect_on:'canvas',events:{onhover:{enable:true,mode:'grab'},onclick:{enable:true,mode:'push'}},modes:{grab:{distance:140,line_linked:{opacity:0.5}},push:{particles_nb:4}}},
+        retina_detect:true
+    });
+
+    // GLOBALS
     const MODEL_URL = 'https://cdn.jsdelivr.net/npm/@vladmandic/face-api/model/';
     let modelsLoaded = false;
-    let currentResult = null; // {score, category, comment, bloodPercent, details}
+    let selectedGender = 'male';
+    let currentResult = null;
 
-    async function loadModels() {
+    async function loadModels(){
         await faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL);
         await faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL);
         modelsLoaded = true;
     }
-    loadModels().catch(e => console.warn("Models deferred"));
+    loadModels().catch(()=>{});
 
-    // ========== TABS ==========
-    document.querySelectorAll('.tab').forEach(tab => {
-        tab.addEventListener('click', () => {
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            tab.classList.add('active');
-            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-            document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
-            if(tab.dataset.tab === 'hall') renderLeaderboard();
+    // TABS
+    document.querySelectorAll('.tab').forEach(t=>{
+        t.addEventListener('click',()=>{
+            document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+            t.classList.add('active');
+            document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+            document.getElementById('panel-'+t.dataset.tab).classList.add('active');
+            if(t.dataset.tab==='hall') renderLeaderboard();
         });
     });
 
-    // ========== FILE UPLOAD ==========
-    function handleFile(event, slot) {
+    // GENDER BUTTONS
+    document.querySelectorAll('.gender-btn').forEach(b=>{
+        b.addEventListener('click',function(){
+            document.querySelectorAll('.gender-btn').forEach(x=>x.classList.remove('active'));
+            this.classList.add('active');
+            selectedGender = this.dataset.gender;
+        });
+    });
+
+    // FILE HANDLING
+    function handleFile(event, slot){
         const file = event.target.files[0];
         if(!file) return;
         const reader = new FileReader();
-        reader.onload = (e) => {
-            const preview = document.getElementById('preview' + slot);
-            const placeholder = document.getElementById('placeholder' + slot);
-            if(preview) {
-                preview.src = e.target.result;
-                preview.style.display = 'block';
-                if(placeholder) placeholder.style.display = 'none';
-            }
+        reader.onload = (e)=>{
+            const preview = document.getElementById('preview'+slot);
+            const placeholder = document.getElementById('placeholder'+slot);
+            if(preview){ preview.src=e.target.result; preview.style.display='block'; }
+            if(placeholder) placeholder.style.display='none';
             checkButtons();
         };
         reader.readAsDataURL(file);
     }
 
-    function checkButtons() {
-        const p1 = document.getElementById('preview1').style.display === 'block';
-        const p2 = document.getElementById('preview2').style.display === 'block';
-        const p3 = document.getElementById('preview3').style.display === 'block';
+    function checkButtons(){
+        const p1 = document.getElementById('preview1').style.display==='block';
+        const p2 = document.getElementById('preview2').style.display==='block';
+        const p3 = document.getElementById('preview3').style.display==='block';
         document.getElementById('btnScan').disabled = !p1;
         document.getElementById('btnBattle').disabled = !(p2 && p3);
     }
 
-    // ========== CORE ANALYSIS ENGINE ==========
-    async function analyzeImage(imageId) {
-        const img = document.getElementById('preview' + imageId);
+    // CORE ANALYSIS
+    async function analyzeImage(imageId){
+        const img = document.getElementById('preview'+imageId);
         if(!img || !img.src) return null;
-
         const image = new Image();
         image.src = img.src;
-        await new Promise(r => { if(image.complete) r(); else image.onload = r; });
+        await new Promise(r=>{if(image.complete)r();else image.onload=r;});
 
-        // Detect
+        const canvas = document.getElementById('canvas1');
+        canvas.width = image.naturalWidth;
+        canvas.height = image.naturalHeight;
+        canvas.style.display = 'none';
+
         const detections = await faceapi.detectAllFaces(image, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks();
-        if(detections.length === 0) return null;
+        if(detections.length === 0) return {error:'no_face'};
+        if(detections.length > 1) return {error:'multi_face'};
 
         const detection = detections[0];
         const landmarks = detection.landmarks;
         const box = detection.detection.box;
 
-        // Draw wireframe
-        const canvas = document.getElementById('canvas1');
+        // Quality checks
+        const brightness = getAverageBrightness(image);
+        if(brightness < 30) return {error:'too_dark'};
+        const textureVar = getTextureVariance(image);
+        if(textureVar < 3) return {error:'cartoon'};
+
+        // Detect gender & beard
+        const jawRatio = getJawRatio(landmarks);
+        const beardRoughness = getBeardRoughness(image, landmarks, box);
+        const detectedGender = (jawRatio > 0.78 || beardRoughness > 18) ? 'male' : 'female';
+        const isSmoothFace = (selectedGender === 'male' && beardRoughness < 8);
+
+        // Draw 3D mesh
         canvas.style.display = 'block';
-        const disp = { width: image.width, height: image.height };
+        const disp = { width: image.naturalWidth, height: image.naturalHeight };
         faceapi.matchDimensions(canvas, disp);
         const resized = faceapi.resizeResults(detections, disp);
         const ctx = canvas.getContext('2d');
         ctx.clearRect(0,0,canvas.width,canvas.height);
         ctx.drawImage(image,0,0,canvas.width,canvas.height);
-        ctx.strokeStyle = '#ffffff';
-        ctx.lineWidth = 2;
+        ctx.strokeStyle = '#00ff41';
+        ctx.lineWidth = 1.5;
         faceapi.draw.drawFaceLandmarks(canvas, resized);
 
         // Metrics
@@ -347,214 +338,191 @@
         const hairTex = getHairTexture(image, landmarks, box);
 
         let skinScore, noseScore, hairScore;
-        if(skinL >= 200) skinScore = 10;
-        else if(skinL >= 170) skinScore = 9;
-        else if(skinL >= 140) skinScore = 7;
-        else if(skinL >= 100) skinScore = 5;
-        else if(skinL >= 60) skinScore = 3;
-        else skinScore = 1;
+        if(skinL >= 90) skinScore=10; else if(skinL>=80) skinScore=9; else if(skinL>=70) skinScore=7;
+        else if(skinL>=55) skinScore=5; else if(skinL>=35) skinScore=3; else skinScore=1;
 
-        if(noseRatio <= 0.75) noseScore = 10;
-        else if(noseRatio <= 0.85) noseScore = 8;
-        else if(noseRatio <= 1.0) noseScore = 6;
-        else if(noseRatio <= 1.2) noseScore = 4;
-        else noseScore = 1;
+        if(noseRatio<=0.70) noseScore=10; else if(noseRatio<=0.80) noseScore=8; else if(noseRatio<=0.95) noseScore=6;
+        else if(noseRatio<=1.15) noseScore=4; else noseScore=1;
 
-        if(hairTex < 10) hairScore = 10;
-        else if(hairTex < 20) hairScore = 8;
-        else if(hairTex < 35) hairScore = 5;
-        else if(hairTex < 55) hairScore = 3;
-        else hairScore = 1;
+        if(hairTex<10) hairScore=10; else if(hairTex<20) hairScore=8; else if(hairTex<35) hairScore=5;
+        else if(hairTex<55) hairScore=3; else hairScore=1;
 
-        const final = (skinScore*0.30 + noseScore*0.25 + hairScore*0.20 + 5*0.15 + 5*0.10);
-        const score = Math.min(10, Math.max(1, Math.round(final)));
+        let final = (skinScore*0.25 + noseScore*0.25 + hairScore*0.25 + 5*0.25);
+        const maxScore = 9;
+        let score = Math.round(final);
+        score = Math.min(maxScore, Math.max(1, score));
 
-        // Bloodline logic: lower beauty = higher slave blood
-        const bloodPercent = Math.round((11 - score) * 10);
-        const bloodText = bloodPercent >= 70 ? "فيك دم عبد أصيل!" :
-                          bloodPercent >= 40 ? "فيك نسبة عبد خفيفة." :
-                          "دمك نقي من العبيد.";
-
-        // Category + Comment
-        let cat, com;
-        switch(score) {
-            case 10: cat='ما شاء الله عليك'; com='يا راس العروسة! أبيض زي اللبن، أنفك سيف، شعرك حرير. ديل عرب أقحاح، العبدان ما بجوك!'; break;
-            case 9: cat='جميل'; com='حليل جمالك. أنت من السلالة النقية. العبدان دول ما عندهم الحلاوة دي.'; break;
-            case 8: cat='حلو'; com='حلو ما شاء الله. على الأقل بعيد من الشناه. العبدان قاعدين في الدرك الأسفل.'; break;
-            case 7: cat='ظريف'; com='وجهك ظريف، تمشي في السوق الناس تلتفت ليك بالغلط. الحمد لله إنك مو زنجي!'; break;
-            case 6: cat='مقبول'; com='عادي، محد يلتفت ليك. الحمد لله إنك مو زنجي أفطس.'; break;
-            case 5: cat='وسط'; com='زي الأكل البارد. العبدان شوية منك أحسن!'; break;
-            case 4: cat='شين شوية'; com='شكلك قاعد تقترب من العبدان، انتبه ليك!'; break;
-            case 3: cat='شين'; com='أنفك الأفطس وشعرك المجعد بدأ يبان. لو مشيت حتة العبدان قالوا أهلاً وسهلاً!'; break;
-            case 2: cat='شين جداً'; com='يا عبد يا ابن العبيد! شعرك زي ليفة الحمام، لونك زي الليل البهيم.'; break;
-            case 1: cat='كارثة طبيعية'; com='وجهك دا شنو؟ أنفك أفطس يمطر ويموت. شعرك دا حبل. أجدادك كانوا في الغابة!'; break;
-            default: cat='؟'; com='...';
-        }
+        const bloodPercent = Math.round((11-score)*10);
 
         return {
-            score, category: cat, comment: com,
-            bloodPercent, bloodText,
-            skinL: skinL.toFixed(1), noseRatio: noseRatio.toFixed(2), hairTex: hairTex.toFixed(1)
+            score, category:getCategory(score, selectedGender), comment:getComment(score, selectedGender, isSmoothFace),
+            bloodPercent, detectedGender, isSmoothFace,
+            skinL:skinL.toFixed(1), noseRatio:noseRatio.toFixed(2), hairTex:hairTex.toFixed(1)
         };
     }
 
-    // ========== SCAN FLOW ==========
-    async function runScan() {
+    // COMMENTS
+    function getCategory(score, gender){
+        const maleMap = {9:'عسول 😍🔥',8:'جنى عرب 😎💣',7:'وجيه 😌✨',6:'زول ساي 😐🍞',5:'عادي 🫥📉',4:'شين رانك 💀📱',3:'فار 🐀🤮',2:'قرد 🙈💔',1:'Error 🚫👹'};
+        const femaleMap = {9:'مزة 😍👑',8:'عسل 🍯💃',7:'بابور 🚂🔥',6:'مقبولة 😊🌸',5:'عادية 😐🧴',4:'محتاجة شغل 🛠️📉',3:'جعفر 😬🪞',2:'افسخي 🧽😭',1:'حمد ولد 🥲🤷‍♀️'};
+        return gender==='female' ? (femaleMap[score]||'') : (maleMap[score]||'');
+    }
+
+    function getComment(score, gender, isSmooth){
+        if(gender==='female'){
+            const map = {
+                9:'انتي ما بت، انتي زلزال 9 ريختر في عالم الجمال. وشك ده يخلي الشيوخ تتلخبط في الدعاء. قمر 14 وخجلان منك.',
+                8:'خطيرة لمن بهناك، جمالك ده يعمل أزمة في البلد. أي ولد يشوفك بتجيهو جلطة خفيفة، تبارك الخلاق.',
+                7:'سمحة لكن مدسوسة، اطلعي من القوقعة دي. وشك ده لو اهتميتي بيهو شوية تقلبي انستغرام، حالياً انتي كنز مدفون.',
+                6:'انتي زي شاي اللبن بدون سكر، مقبولة بس ناقصك حلاوة. ظبطي الاستايل والميكب الخفيف بتبقي باسطة عديل.',
+                5:'وشك ده زي مسلسل رمضان، الناس بتحضرو ساي عشان مافي غيرو. اهتمي بشرتك واشربي موية.',
+                4:'انتي مشروع تخرج فاشل محتاج إعادة. وشك ده عايز صنفرة وبوهية وورشة كاملة.',
+                3:'يا بت امي شكلك ده يجيب الطمام. المراية كسرت الحنك منك وبقت تشتغل راديو.',
+                2:'انتي حالة طوارئ تجميلية. وضعك صعب صعب، حتى الفوتوشوب رفع يدو.',
+                1:'انتي عبرة لمن يعتبر. الجمال سمع باسمك وعمل هجرة غير شرعية. خليك على جمال الروح.'
+            };
+            return map[score]||'';
+        }
+        const maleMap = {
+            9:'يا زول انت قفلت ملف الوسامة وجدعت المفتاح في النيل. وشك ده تأشيرة دخول لقلب أي بت، لو الجمال شركة انت المدير التنفيذي.',
+            8:'خطير عديل يا مكنة، وشك ده مفروض يتأجر بالساعة. تمشي في الشارع الزلط يتكسر من الهيبة، والبنات تعمل حادث عاطفي.',
+            7:'سمح لكن نايم في العسل، وشك ده لو صحصحت بيهو شوية تعمل قلق. حالياً انت وضعها طيران، شغل المحركات يا معلم.',
+            6:'انت تمومة عدد في الدنيا، لا بهش لا بنش. لو غبت أسبوع أهلك ذاتهم ما يلاحظوا. وجودك زي الملح الناقص في الأكل.',
+            5:'شكلك شبه غلط، لا تامي سمح لا تامي شين. وشك ده يجيب النعاس، لو فسخت امورك يمكن نديك 6 بالرجالة ساي.',
+            4:'يا زول انت السبب البخلي الكاميرا الأمامية تعتزل. وشك ده محتوى +18، الأطفال لو شافوك يبكوا.',
+            3:'انت كارثة بيئية متحركة. المراية لما تشوفك بتتف على روحها وتستقيل. وشك ده مفروض يتحظر دولياً.',
+            2:'والله القرود رفعت قضية تشهير بسببك. انت مستحيل تتجازف حتى في الأحلام، شكلِك ده كابوس طبيعي.',
+            1:'انت فيروس في سيستم الخِلقة. لو الوسامة دين انت كافر عديل. انصحك تعتزل البشر وتفتح ليك كهف في الجبال.'
+        };
+        return maleMap[score]||'';
+    }
+
+    // SCAN FLOW
+    async function runScan(){
         const btn = document.getElementById('btnScan');
         const progWrap = document.getElementById('progressWrap');
         const progFill = document.getElementById('progressFill');
         const progText = document.getElementById('progressText');
         const resultBox = document.getElementById('resultBox');
+        btn.disabled=true; progWrap.style.display='block'; resultBox.style.display='none';
 
-        btn.disabled = true;
-        progWrap.style.display = 'block';
-        resultBox.style.display = 'none';
-
-        // Fake progress
-        const steps = ['جاري كشف الوجه...', 'تحليل البكسلات...', 'قياس الأنف...', 'فحص نسيج الشعر...', 'حساب نسبة العبد...', 'تجهيز التقرير...'];
-        for(let i=0; i<steps.length; i++) {
-            progText.textContent = steps[i];
-            progFill.style.width = ((i+1)/steps.length * 100) + '%';
-            await sleep(400 + Math.random()*300);
+        const steps = ['جاري كشف الوجه...','تحليل 5000 بكسل بشرة...','قياس تناسق الأنف...','فحص نسيج الشعر...','حساب نسبة العبد...','تجهيز التقرير النهائي...'];
+        for(let i=0;i<steps.length;i++){
+            progText.textContent=steps[i]; progFill.style.width=((i+1)/steps.length*100)+'%';
+            await new Promise(r=>setTimeout(r,350+Math.random()*250));
         }
 
         if(!modelsLoaded) await loadModels().catch(()=>{});
         const result = await analyzeImage(1);
 
-        if(!result) {
-            alert("ما لقينا وجه بشري. جرب صورة أوضح يا زول.");
-            btn.disabled = false;
-            progWrap.style.display = 'none';
-            return;
+        if(!result || result.error){
+            const msgs = {no_face:'ما لقينا وجه بشري! تأكد من الصورة.', multi_face:'في الصورة أكثر من وجه! الرجاء صورة بوجه واحد فقط.', too_dark:'الصورة مظلمة جداً! نحتاج إضاءة أفضل.', cartoon:'هذه الصورة تبدو كرتونية أو معدلة جداً!'};
+            alert(msgs[result?.error]||'فشل التحليل. جرب صورة أخرى.');
+            btn.disabled=false; progWrap.style.display='none'; return;
         }
 
-        // Display
-        document.getElementById('scoreVal').innerText = result.score + '/10';
+        document.getElementById('scoreVal').innerText = result.score+'/9';
         document.getElementById('categoryVal').innerText = result.category;
         document.getElementById('commentVal').innerText = result.comment;
-        document.getElementById('bloodFill').style.width = result.bloodPercent + '%';
-        document.getElementById('bloodText').innerText = result.bloodPercent + '% — ' + result.bloodText;
-        document.getElementById('detailsVal').innerText =
-            `بشرة L*=${result.skinL} | أنف=${result.noseRatio} | شعر=${result.hairTex}`;
-
-        resultBox.style.display = 'block';
-        progWrap.style.display = 'none';
-        btn.disabled = false;
+        document.getElementById('bloodFill').style.width = result.bloodPercent+'%';
+        document.getElementById('bloodText').innerText = result.bloodPercent+'%';
+        resultBox.style.display='block'; progWrap.style.display='none'; btn.disabled=false;
         currentResult = result;
     }
 
-    // ========== BATTLE ==========
-    async function runBattle() {
+    // BATTLE
+    async function runBattle(){
         const btn = document.getElementById('btnBattle');
-        const resultBox = document.getElementById('battleResult');
-        btn.disabled = true;
-        resultBox.style.display = 'none';
-
+        const resBox = document.getElementById('battleResult');
+        btn.disabled=true; resBox.style.display='none';
         if(!modelsLoaded) await loadModels().catch(()=>{});
-        
-        // Analyze both (simplified: just use first image analysis for both if needed)
         const r1 = await analyzeImage(2);
         const r2 = await analyzeImage(3);
-
-        if(!r1 || !r2) {
-            alert("تأكد من وجهين صالحين في الصورتين.");
-            btn.disabled = false;
-            return;
-        }
-
-        let winner, loser;
-        if(r1.score > r2.score) { winner = "المتحدي 1"; loser = "المتحدي 2"; }
-        else if(r2.score > r1.score) { winner = "المتحدي 2"; loser = "المتحدي 1"; }
-        else { winner = "تعادل"; loser = null; }
-
-        document.getElementById('battleWinner').innerText =
-            winner === "تعادل" ? "🤝 تعادل! الاتنين نفس المستوى" : `👑 ${winner} فاز!`;
-        document.getElementById('battleComment').innerText =
-            winner === "تعادل" ? "الاتنين شبه بعض، لا غالب ولا مغلوب." :
-            `${winner} أجمل بمراحل. ${loser} روح استرجل.`;
-
-        resultBox.style.display = 'block';
-        btn.disabled = false;
+        if(!r1||!r2||r1.error||r2.error){ alert('تأكد من وجهين صالحين.'); btn.disabled=false; return; }
+        let winner,loser;
+        if(r1.score>r2.score){ winner='المتحدي 1'; loser='المتحدي 2'; }
+        else if(r2.score>r1.score){ winner='المتحدي 2'; loser='المتحدي 1'; }
+        else { winner='تعادل'; }
+        document.getElementById('battleWinner').innerText = winner==='تعادل'?'🤝 تعادل!':`👑 ${winner} فاز!`;
+        document.getElementById('battleComment').innerText = winner==='تعادل'?'الاتنين نفس المستوى.':`${winner} أجمل بمراحل. ${loser} روح استرجل.`;
+        resBox.style.display='block'; btn.disabled=false;
     }
 
-    // ========== LEADERBOARD ==========
-    function saveToLeaderboard() {
+    // LEADERBOARD
+    function saveToLeaderboard(){
         if(!currentResult) return;
-        let fame = JSON.parse(localStorage.getItem('fame') || '[]');
-        let shame = JSON.parse(localStorage.getItem('shame') || '[]');
-        const entry = { score: currentResult.score, category: currentResult.category, time: new Date().toLocaleString('ar-SA') };
-        if(currentResult.score >= 7) {
-            fame.push(entry);
-            fame.sort((a,b) => b.score - a.score);
-            fame = fame.slice(0, 10);
-            localStorage.setItem('fame', JSON.stringify(fame));
-        } else {
-            shame.push(entry);
-            shame.sort((a,b) => a.score - b.score);
-            shame = shame.slice(0, 10);
-            localStorage.setItem('shame', JSON.stringify(shame));
-        }
-        alert('تم تسجيل نتيجتك في اللوحة!');
+        let fame=JSON.parse(localStorage.getItem('fame')||'[]'), shame=JSON.parse(localStorage.getItem('shame')||'[]');
+        const entry={score:currentResult.score, category:currentResult.category, time:new Date().toLocaleString('ar-SA')};
+        if(currentResult.score>=7){ fame.push(entry); fame.sort((a,b)=>b.score-a.score); fame=fame.slice(0,10); localStorage.setItem('fame',JSON.stringify(fame)); }
+        else { shame.push(entry); shame.sort((a,b)=>a.score-b.score); shame=shame.slice(0,10); localStorage.setItem('shame',JSON.stringify(shame)); }
+        alert('تم تسجيل نتيجتك!');
     }
-
-    function renderLeaderboard() {
-        const fame = JSON.parse(localStorage.getItem('fame') || '[]');
-        const shame = JSON.parse(localStorage.getItem('shame') || '[]');
-        document.getElementById('hallFame').innerHTML = fame.length ? fame.map((e,i) => `<div class="entry"><span>🥇 ${e.score}/10 — ${e.category}</span><span style="color:#888;font-size:10px;">${e.time}</span></div>`).join('') : '<div style="color:#888;">لا يوجد أبطال بعد</div>';
-        document.getElementById('hallShame').innerHTML = shame.length ? shame.map((e,i) => `<div class="entry"><span>💀 ${e.score}/10 — ${e.category}</span><span style="color:#888;font-size:10px;">${e.time}</span></div>`).join('') : '<div style="color:#888;">لا يوجد عبيد بعد</div>';
+    function renderLeaderboard(){
+        const fame=JSON.parse(localStorage.getItem('fame')||'[]'), shame=JSON.parse(localStorage.getItem('shame')||'[]');
+        document.getElementById('hallFame').innerHTML = fame.length?fame.map((e,i)=>`<div class="entry"><span>🥇 ${e.score}/9 — ${e.category}</span><span style="color:#888;font-size:10px;">${e.time}</span></div>`).join(''):'<div style="color:#888;">لا يوجد أبطال بعد</div>';
+        document.getElementById('hallShame').innerHTML = shame.length?shame.map((e,i)=>`<div class="entry"><span>💀 ${e.score}/9 — ${e.category}</span><span style="color:#888;font-size:10px;">${e.time}</span></div>`).join(''):'<div style="color:#888;">لا يوجد بعد</div>';
     }
+    function clearLeaderboard(){ localStorage.removeItem('fame'); localStorage.removeItem('shame'); renderLeaderboard(); }
+    renderLeaderboard();
 
-    function clearLeaderboard() {
-        localStorage.removeItem('fame');
-        localStorage.removeItem('shame');
-        renderLeaderboard();
+    // HELPERS
+    function getAverageBrightness(img){
+        const c=document.createElement('canvas'), ctx=c.getContext('2d');
+        c.width=100; c.height=100; ctx.drawImage(img,0,0,100,100);
+        const d=ctx.getImageData(0,0,100,100).data; let sum=0;
+        for(let i=0;i<d.length;i+=4) sum+=(d[i]+d[i+1]+d[i+2])/3;
+        return sum/(100*100);
     }
-
-    // ========== HELPERS ==========
-    function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
-
-    function getSkinBrightness(img, landmarks) {
-        const jaw = landmarks.getJawOutline();
-        if(!jaw.length) return 128;
-        const x = jaw[0].x + (jaw[15].x - jaw[0].x)*0.3;
-        const y = (landmarks.getLeftEye()[1].y + jaw[5].y)/2;
-        const c = document.createElement('canvas');
-        c.width = img.width; c.height = img.height;
-        const ctx = c.getContext('2d');
-        ctx.drawImage(img,0,0);
-        const px = ctx.getImageData(Math.round(x), Math.round(y), 1, 1).data;
-        const lin = v => v/255 <= 0.04045 ? (v/255)/12.92 : Math.pow((v/255+0.055)/1.055,2.4);
-        const Y = 0.2126*lin(px[0]) + 0.7152*lin(px[1]) + 0.0722*lin(px[2]);
-        return Math.min(255, Math.max(0, Y>0.008856 ? 116*Math.pow(Y,1/3)-16 : 903.3*Y));
-    }
-
-    function getNoseRatio(landmarks) {
-        const n = landmarks.getNose();
-        if(n.length<9) return 1;
-        const w = Math.hypot(n[0].x-n[4].x, n[0].y-n[4].y);
-        const h = Math.hypot(n[6].x-n[3].x, n[6].y-n[3].y);
-        return w / h;
-    }
-
-    function getHairTexture(img, landmarks, box) {
-        const lEye = landmarks.getLeftEye();
-        const rEye = landmarks.getRightEye();
-        const topY = Math.min(lEye[0].y, rEye[0].y) - 60;
-        const x = box.x, y = Math.max(0,topY), w = box.width, h = 50;
-        if(w<10||h<10) return 25;
-        const c = document.createElement('canvas');
-        c.width = img.width; c.height = img.height;
-        const ctx = c.getContext('2d');
-        ctx.drawImage(img,0,0);
-        const data = ctx.getImageData(x,y,w,h).data;
-        let gray = [];
-        for(let i=0;i<data.length;i+=4) gray.push(0.299*data[i]+0.587*data[i+1]+0.114*data[i+2]);
-        const mean = gray.reduce((a,b)=>a+b,0)/gray.length;
+    function getTextureVariance(img){
+        const c=document.createElement('canvas'), ctx=c.getContext('2d');
+        c.width=100; c.height=100; ctx.drawImage(img,0,0,100,100);
+        const d=ctx.getImageData(0,0,100,100).data; let gray=[];
+        for(let i=0;i<d.length;i+=4) gray.push(0.299*d[i]+0.587*d[i+1]+0.114*d[i+2]);
+        const mean=gray.reduce((a,b)=>a+b,0)/gray.length;
         return Math.sqrt(gray.reduce((a,b)=>a+Math.pow(b-mean,2),0)/gray.length);
     }
-
-    // init
-    renderLeaderboard();
+    function getSkinBrightness(img, landmarks){
+        const jaw=landmarks.getJawOutline(); if(!jaw.length) return 50;
+        const x=jaw[0].x+(jaw[15].x-jaw[0].x)*0.3, y=(landmarks.getLeftEye()[1].y+jaw[5].y)/2;
+        const c=document.createElement('canvas'); c.width=img.width; c.height=img.height;
+        const ctx=c.getContext('2d'); ctx.drawImage(img,0,0);
+        const px=ctx.getImageData(Math.round(x),Math.round(y),1,1).data;
+        const lin=v=>v/255<=0.04045?(v/255)/12.92:Math.pow((v/255+0.055)/1.055,2.4);
+        const Y=0.2126*lin(px[0])+0.7152*lin(px[1])+0.0722*lin(px[2]);
+        return Math.min(100,Math.max(0,Y>0.008856?116*Math.pow(Y,1/3)-16:903.3*Y));
+    }
+    function getNoseRatio(landmarks){
+        const n=landmarks.getNose(); if(n.length<9) return 1;
+        const w=Math.hypot(n[0].x-n[4].x,n[0].y-n[4].y), h=Math.hypot(n[6].x-n[3].x,n[6].y-n[3].y);
+        return w/h;
+    }
+    function getHairTexture(img, landmarks, box){
+        const lEye=landmarks.getLeftEye(), rEye=landmarks.getRightEye();
+        const topY=Math.min(lEye[0].y,rEye[0].y)-60, x=box.x, y=Math.max(0,topY), w=box.width, h=50;
+        if(w<10||h<10) return 25;
+        const c=document.createElement('canvas'); c.width=img.width; c.height=img.height;
+        const ctx=c.getContext('2d'); ctx.drawImage(img,0,0);
+        const d=ctx.getImageData(x,y,w,h).data; let gray=[];
+        for(let i=0;i<d.length;i+=4) gray.push(0.299*d[i]+0.587*d[i+1]+0.114*d[i+2]);
+        const mean=gray.reduce((a,b)=>a+b,0)/gray.length;
+        return Math.sqrt(gray.reduce((a,b)=>a+Math.pow(b-mean,2),0)/gray.length);
+    }
+    function getJawRatio(landmarks){
+        const jaw=landmarks.getJawOutline(); if(jaw.length<17) return 0.75;
+        const w=Math.hypot(jaw[0].x-jaw[16].x,jaw[0].y-jaw[16].y);
+        const h=Math.hypot(jaw[8].x-(jaw[0].x+jaw[16].x)/2,jaw[8].y-(jaw[0].y+jaw[16].y)/2);
+        return w/(h*2);
+    }
+    function getBeardRoughness(img, landmarks, box){
+        const nose=landmarks.getNose(); if(nose.length<7) return 10;
+        const x=box.x, y=nose[6].y+5, w=box.width, h=box.height*0.25;
+        const c=document.createElement('canvas'); c.width=img.width; c.height=img.height;
+        const ctx=c.getContext('2d'); ctx.drawImage(img,0,0);
+        const d=ctx.getImageData(x,Math.round(y),Math.round(w),Math.round(h)).data;
+        let gray=[]; for(let i=0;i<d.length;i+=4) gray.push(0.299*d[i]+0.587*d[i+1]+0.114*d[i+2]);
+        const mean=gray.reduce((a,b)=>a+b,0)/gray.length;
+        return Math.sqrt(gray.reduce((a,b)=>a+Math.pow(b-mean,2),0)/gray.length);
+    }
 </script>
 </body>
-</html>
+</html>DOCTYPE html>
