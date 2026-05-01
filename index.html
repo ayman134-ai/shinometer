@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>مقياس الشناه برو | VIP Skin Lab</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        /* ... (نفس الـ CSS الفاخر السابق بدون تغيير) ... */
+        :root {
+            --bg: #050508;
+            --card-bg: rgba(18,18,28,0.75);
+            --gold: #d4af37;
+            --gold-light: #f0d060;
+            --text: #e0d6c2;
+            --sub: #a09080;
+            --border: rgba(212,175,55,0.25);
+            --red: #c0392b;
+            --green: #2ecc71;
+        }
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Cairo', sans-serif;
+            min-height: 100vh; display: flex; justify-content: center; align-items: center;
+            padding: 16px; direction: rtl;
+            overflow-x: hidden;
+        }
+        #particles-js {
+            position: fixed; top:0; left:0; width:100%; height:100%; z-index:0;
+            pointer-events: none;
+        }
+        .container {
+            position: relative; z-index:1;
+            max-width: 480px; width:100%; background: var(--card-bg);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-radius: 28px; padding: 24px 16px;
+            border: 1px solid var(--border);
+            box-shadow: 0 25px 60px rgba(0,0,0,0.7), 0 0 30px rgba(212,175,55,0.15);
+            text-align: center;
+        }
+        .gold-text{ color: var(--gold); font-weight: bold; }
+        .badge{
+            background: rgba(212,175,55,0.1); color: var(--gold); font-size: 11px;
+            padding: 4px 12px; border-radius: 20px; display: inline-block; margin: 4px;
+            border: 1px solid var(--border);
+        }
+        .tabs{ display:flex; gap:8px; margin:16px 0; flex-wrap:wrap; justify-content:center; }
+        .tab{
+            background: rgba(255,255,255,0.05); border:1px solid var(--border); color:var(--sub);
+            padding:8px 14px; border-radius: 24px; font-size:13px; cursor:pointer; transition:0.3s;
+            backdrop-filter: blur(5px);
+        }
+        .tab.active{ background: var(--gold); color:#000; font-weight:700; border-color:var(--gold); }
+        .panel{ display:none; }
+        .panel.active{ display:block; }
+
+        .upload-zone{
+            background: rgba(255,255,255,0.03); border:2px dashed var(--border); border-radius:20px;
+            padding:28px 16px; cursor:pointer; transition:0.3s; margin:12px 0; position:relative;
+        }
+        .upload-zone:hover{ border-color:var(--gold); background:rgba(212,175,55,0.03); }
+        .upload-zone img{ max-width:100%; max-height:260px; border-radius:14px; display:none; }
+        .upload-zone .icon{ font-size:48px; margin-bottom:8px; }
+        .btn{
+            background: linear-gradient(135deg, var(--gold), #b8942e);
+            color:#000; border:none; padding:14px; border-radius:14px; font-size:16px;
+            font-weight:700; cursor:pointer; width:100%; margin:10px 0; transition:0.3s;
+            letter-spacing:1px; box-shadow: 0 8px 25px rgba(212,175,55,0.25);
+        }
+        .btn:active{ transform:scale(0.96); }
+        .btn:disabled{ opacity:0.4; pointer-events:none; }
+        .btn.red{ background: linear-gradient(135deg, #c0392b, #e74c3c); box-shadow: 0 8px 25px rgba(192,57,43,0.3); color:#fff; }
+
+        .progress-wrap{
+            display:none; background:rgba(255,255,255,0.05); border-radius:14px; height:22px;
+            margin:14px 0; overflow:hidden; border:1px solid var(--border);
+        }
+        .progress-fill{
+            height:100%; width:0%; background: linear-gradient(90deg, var(--gold), var(--gold-light));
+            border-radius:14px; transition: width 0.3s;
+        }
+        .progress-text{ font-size:12px; color:var(--gold); margin:6px 0; }
+
+        .result-box{
+            background: rgba(212,175,55,0.05); border:1px solid var(--gold);
+            border-radius:20px; padding:20px; margin:16px 0; display:none;
+            box-shadow: 0 0 30px rgba(212,175,55,0.2);
+            animation: glowPulse 2s infinite;
+        }
+        @keyframes glowPulse {
+            0%{box-shadow:0 0 20px rgba(212,175,55,0.2)}
+            50%{box-shadow:0 0 40px rgba(212,175,55,0.4)}
+            100%{box-shadow:0 0 20px rgba(212,175,55,0.2)}
+        }
+        .big-score{ font-size:64px; font-weight:900; color:var(--gold); text-shadow:0 0 20px rgba(212,175,55,0.5); }
+        .category{ font-size:26px; font-weight:700; margin:6px 0; }
+        .comment{
+            font-size:15px; margin:12px 0; padding:14px; background:rgba(0,0,0,0.3);
+            border-radius:12px; border-right:3px solid var(--gold); line-height:1.7;
+        }
+        .blood-bar{
+            background:rgba(255,255,255,0.05); border-radius:10px; height:12px;
+            margin:8px 0; overflow:hidden;
+        }
+        .blood-fill{ height:100%; background:var(--red); border-radius:10px; transition: width 0.5s; }
+
+        canvas{ display:none; margin:12px auto; border-radius:16px; border:1px solid var(--border); max-width:100%; }
+
+        .gender-btns{ display:flex; gap:10px; justify-content:center; margin:10px 0; }
+        .gender-btn{
+            background:rgba(255,255,255,0.05); border:1px solid var(--border); color:var(--sub);
+            padding:8px 18px; border-radius:20px; font-size:13px; cursor:pointer;
+        }
+        .gender-btn.active{ background:var(--gold); color:#000; border-color:var(--gold); }
+
+        .leaderboard{
+            background:rgba(255,255,255,0.03); border-radius:16px; padding:12px; margin:10px 0;
+            text-align:right; max-height:200px; overflow-y:auto;
+        }
+        .leaderboard .entry{
+            display:flex; justify-content:space-between; padding:6px 0;
+            border-bottom:1px solid var(--border); font-size:13px;
+        }
+        .vs{ font-size:32px; margin:10px 0; color:var(--gold); }
+
+        #fileInput, #fileInput2, #fileInput3{ display:none; }
+    </style>
+</head>
+<body>
+
+<div id="particles-js"></div>
+
+<div class="container">
+    <h2 style="color:var(--gold); font-weight:900; font-size:24px; margin-bottom:4px;">🧬 مقياس الشناه برو</h2>
+    <div class="badge">تحليل جيني دقيق</div>
+    <div class="badge">كشف الأنساب 2.0</div>
+    <div class="badge">VIP Skin Lab</div>
+
+    <div class="tabs">
+        <div class="tab active" data-tab="scan">🔬 فحص فردي</div>
+        <div class="tab" data-tab="battle">⚔️ معركة 1v1</div>
+        <div class="tab" data-tab="hall">🏆 لوحة الشرف</div>
+    </div>
+
+    <!-- SINGLE SCAN -->
+    <div class="panel active" id="panel-scan">
+        <div class="gender-btns" id="genderBtns">
+            <span style="color:var(--sub);font-size:12px;">اختر جنسك:</span>
+            <span class="gender-btn active" data-gender="male">🧔🏻 رجال</span>
+            <span class="gender-btn" data-gender="female">👩🏻 بنت</span>
+        </div>
+
+        <div class="upload-zone" onclick="document.getElementById('fileInput').click()">
+            <div id="placeholder1"><div class="icon">📷</div><div>ارفع صورتك هنا</div><div style="font-size:11px;color:var(--sub);">PNG, JPG, WEBP</div></div>
+            <img id="preview1" alt="preview">
+        </div>
+        <input type="file" id="fileInput" accept="image/*" onchange="handleFile(event,1)">
+
+        <button class="btn" id="btnScan" disabled onclick="runScan()">🔬 حلل وجهي</button>
+
+        <div class="progress-wrap" id="progressWrap">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="progress-text" id="progressText"></div>
+        <canvas id="canvas1"></canvas>
+
+        <div class="result-box" id="resultBox">
+            <div style="color:var(--sub);font-size:11px;">مقدار الشناه المقدر</div>
+            <div class="big-score" id="scoreVal">-</div>
+            <div class="category" id="categoryVal"></div>
+            <div class="comment" id="commentVal"></div>
+            <div style="margin-top:12px;color:var(--sub);font-size:11px;">نسبة العبد في الدم</div>
+            <div class="blood-bar"><div class="blood-fill" id="bloodFill" style="width:0%;"></div></div>
+            <div style="font-size:13px;color:var(--red);" id="bloodText"></div>
+            <button class="btn" style="margin-top:12px;" onclick="saveToLeaderboard()">📋 سجل نتيجتي</button>
+        </div>
+    </div>
+
+    <!-- BATTLE -->
+    <div class="panel" id="panel-battle">
+        <div style="display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;">
+            <div style="flex:1;min-width:120px;">
+                <div class="upload-zone" onclick="document.getElementById('fileInput2').click()">
+                    <div id="placeholder2"><div class="icon">🧑</div><div>المتحدي 1</div></div>
+                    <img id="preview2" alt="p1">
+                </div>
+            </div>
+            <div class="vs">⚔️</div>
+            <div style="flex:1;min-width:120px;">
+                <div class="upload-zone" onclick="document.getElementById('fileInput3').click()">
+                    <div id="placeholder3"><div class="icon">🧑</div><div>المتحدي 2</div></div>
+                    <img id="preview3" alt="p2">
+                </div>
+            </div>
+        </div>
+        <input type="file" id="fileInput2" accept="image/*" onchange="handleFile(event,2)">
+        <input type="file" id="fileInput3" accept="image/*" onchange="handleFile(event,3)">
+        <button class="btn" id="btnBattle" disabled onclick="runBattle()">⚔️ ابدأ المعركة</button>
+        <div class="result-box" id="battleResult">
+            <div style="font-size:20px;font-weight:bold;" id="battleWinner"></div>
+            <div class="comment" id="battleComment"></div>
+        </div>
+    </div>
+
+    <!-- LEADERBOARD -->
+    <div class="panel" id="panel-hall">
+        <h3 style="color:var(--gold);margin:8px 0;">🏆 لوحة الشرف (الأجمل)</h3>
+        <div class="leaderboard" id="hallFame"></div>
+        <h3 style="color:var(--red);margin:8px 0;">💀 لوحة العار (الأشين)</h3>
+        <div class="leaderboard" id="hallShame"></div>
+        <button class="btn red" onclick="clearLeaderboard()">🗑️ امسح اللوحة</button>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+<script>
+    // ... (كود particles.js كما هو) ...
+    particlesJS('particles-js', {
+        particles: {
+            number:{value:60,density:{enable:true,value_area:800}},
+            color:{value:'#d4af37'},
+            shape:{type:'circle'},
+            opacity:{value:0.4,random:true},
+            size:{value:2.5,random:true},
+            line_linked:{enable:true,distance:120,color:'#d4af37',opacity:0.2,width:1},
+            move:{enable:true,speed:0.8,random:true}
+        },
+        interactivity:{detect_on:'canvas',events:{onhover:{enable:true,mode:'grab'},onclick:{enable:true,mode:'push'}},modes:{grab:{distance:140,line_linked:{opacity:0.5}},push:{particles_nb:4}}},
+        retina_detect:true
+    });
+
+    // ... (إعدادات المتغيرات العامة كما هي) ...
+    const MODEL_URL = 'https://cdn.jsdelivr.net/npm/@vladmandic/face-api/model/';
+    let modelsLoaded = false;
+    let selectedGender = 'male';
+    let currentResult = null;
+
+    async function loadModels(){
+        await faceapi.nets.ssdMobilenetv1.loadFromUri(MODEL_URL);
+        await faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL);
+        modelsLoaded = true;
+    }
+    loadModels().catch(()=>{});
+
+    // ... (كود الألسنة والأزرار كما هو) ...
+    document.querySelectorAll('.tab').forEach(t=>{ /* ... */ });
+    document.querySelectorAll('.gender-btn').forEach(b=>{ /* ... */ });
+    function handleFile(event, slot){ /* ... */ }
+    function checkButtons(){ /* ... */ }
+
+    // ========== نظام التحليل الأساسي المُحسّن ==========
+    async function analyzeImage(imageId){
+        const img = document.getElementById('preview'+imageId);
+        if(!img || !img.src) return null;
+        const image = new Image();
+        image.src = img.src;
+        await new Promise(r=>{if(image.complete)r();else image.onload=r;});
+
+        const canvas = document.getElementById('canvas1');
+        canvas.width = image.naturalWidth;
+        canvas.height = image.naturalHeight;
+        canvas.style.display = 'none';
+
+        const detections = await faceapi.detectAllFaces(image, new faceapi.SsdMobilenetv1Options()).withFaceLandmarks();
+        if(detections.length === 0) return {error:'no_face'};
+        if(detections.length > 1) return {error:'multi_face'};
+
+        const detection = detections[0];
+        const landmarks = detection.landmarks;
+        const box = detection.detection.box;
+
+        // فحوصات الجودة (كما هي)
+        const brightness = getAverageBrightness(image);
+        if(brightness < 30) return {error:'too_dark'};
+        const textureVar = getTextureVariance(image);
+        if(textureVar < 3) return {error:'cartoon'};
+
+        // كشف الجنس تلقائياً
+        const jawRatio = getJawRatio(landmarks);
+        const beardRoughness = getBeardRoughness(image, landmarks, box);
+        const detectedGender = (jawRatio > 0.78 || beardRoughness > 18) ? 'male' : 'female';
+        const isSmoothFace = (selectedGender === 'male' && beardRoughness < 8);
+
+        // رسم 3D mesh (كما هو)
+        canvas.style.display = 'block';
+        const disp = { width: image.naturalWidth, height: image.naturalHeight };
+        faceapi.matchDimensions(canvas, disp);
+        const resized = faceapi.resizeResults(detections, disp);
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        ctx.drawImage(image,0,0,canvas.width,canvas.height);
+        ctx.strokeStyle = '#00ff41';
+        ctx.lineWidth = 1.5;
+        faceapi.draw.drawFaceLandmarks(canvas, resized);
+
+        // ========== المقاييس الجديدة الدقيقة ==========
+        // 1. درجة التناسق بالنسبة الذهبية (Golden Ratio Score)
+        const goldenScore = calculateGoldenRatioScore(landmarks);
+        
+        // 2. درجة لون البشرة المُحسّن (Multi-point Skin Tone)
+        const skinScore = getAdvancedSkinScore(image, landmarks);
+        
+        // 3. درجة الأنف المُحسّنة (Nose Precision)
+        const noseScore = getAdvancedNoseScore(landmarks);
+        
+        // 4. درجة الشعر المُحسّنة (Hair Texture 2.0)
+        const hairScore = getAdvancedHairScore(image, landmarks, box);
+
+        // ========== حساب الدرجة النهائية ==========
+        // الأوزان الجديدة: التناسق 35%، البشرة 30%، الأنف 20%، الشعر 15%
+        let final = (goldenScore * 0.35) + (skinScore * 0.30) + (noseScore * 0.20) + (hairScore * 0.15);
+        const maxScore = 9;
+        let score = Math.round(final);
+        score = Math.min(maxScore, Math.max(1, score));
+
+        const bloodPercent = Math.round((11-score)*10);
+
+        return {
+            score, category:getCategory(score, selectedGender), comment:getComment(score, selectedGender, isSmoothFace),
+            bloodPercent, detectedGender, isSmoothFace,
+            skinL: skinScore, noseRatio: noseScore, hairTex: hairScore
+        };
+    }
+
+    // ========== دوال القياس الدقيقة ==========
+    
+    // 1. النسبة الذهبية (Golden Ratio)
+    function calculateGoldenRatioScore(landmarks) {
+        const phi = 1.618;
+        // استخراج النقاط الرئيسية
+        const leftEye = landmarks.getLeftEye();
+        const rightEye = landmarks.getRightEye();
+        const nose = landmarks.getNose();
+        const mouth = landmarks.getMouth();
+        const jaw = landmarks.getJawOutline();
+
+        // عرض الوجه / طول الوجه
+        const faceWidth = Math.abs(jaw[16].x - jaw[0].x);
+        const faceHeight = Math.abs(jaw[8].y - landmarks[27].y * 0.5);
+        const ratio1 = faceHeight / faceWidth;
+
+        // المسافة بين العينين / عرض العين
+        const eyeDist = Math.abs(rightEye[0].x - leftEye[3].x);
+        const eyeWidth = (Math.abs(rightEye[3].x - rightEye[0].x) + Math.abs(leftEye[3].x - leftEye[0].x)) / 2;
+        const ratio2 = eyeDist / eyeWidth;
+
+        // عرض الفم / عرض الأنف
+        const mouthWidth = Math.abs(mouth[6].x - mouth[0].x);
+        const noseWidth = Math.abs(nose[4].x - nose[0].x);
+        const ratio3 = mouthWidth / noseWidth;
+
+        // المسافة من العين للفم / المسافة من العين لأعلى الجبهة
+        const eyeMouthDist = Math.abs(mouth[6].y - ((leftEye[0].y + rightEye[0].y)/2));
+        const eyeForeheadDist = Math.abs(((leftEye[0].y + rightEye[0].y)/2) - landmarks[27].y);
+        const ratio4 = eyeMouthDist / eyeForeheadDist;
+
+        // حساب الفروقات وتحويلها لدرجات
+        const scores = [
+            10 - Math.abs(ratio1 - phi) * 4,
+            10 - Math.abs(ratio2 - phi) * 4,
+            10 - Math.abs(ratio3 - phi) * 4,
+            10 - Math.abs(ratio4 - phi) * 3
+        ];
+
+        const avgScore = scores.reduce((a,b) => a + b, 0) / scores.length;
+        return Math.max(1, Math.min(10, avgScore));
+    }
+
+    // 2. تحليل لون البشرة المُحسّن (3 نقاط)
+    function getAdvancedSkinScore(img, landmarks) {
+        const leftCheek = landmarks.getLeftEye()[0];
+        const rightCheek = landmarks.getRightEye()[3];
+        const forehead = landmarks[27]; // نقطة الجبهة
+        
+        const points = [
+            {x: leftCheek.x + 15, y: leftCheek.y + 20},  // الوجنة اليسرى
+            {x: rightCheek.x - 15, y: rightCheek.y + 20}, // الوجنة اليمنى
+            {x: forehead.x, y: forehead.y - 15}           // الجبهة
+        ];
+
+        let totalL = 0;
+        const c = document.createElement('canvas');
+        c.width = img.width; c.height = img.height;
+        const ctx = c.getContext('2d');
+        ctx.drawImage(img,0,0);
+
+        points.forEach(p => {
+            const pixel = ctx.getImageData(Math.round(p.x), Math.round(p.y), 1, 1).data;
+            const lin = v => v/255 <= 0.04045 ? (v/255)/12.92 : Math.pow((v/255+0.055)/1.055,2.4);
+            const Y = 0.2126*lin(pixel[0]) + 0.7152*lin(pixel[1]) + 0.0722*lin(pixel[2]);
+            const L = Y > 0.008856 ? 116*Math.pow(Y,1/3)-16 : 903.3*Y;
+            totalL += Math.min(100, Math.max(0, L));
+        });
+
+        const avgL = totalL / 3;
+        // تحويل قيمة L إلى درجة (0-100 إلى 1-10)
+        if(avgL >= 90) return 10;
+        else if(avgL >= 85) return 9;
+        else if(avgL >= 75) return 8;
+        else if(avgL >= 65) return 7;
+        else if(avgL >= 55) return 6;
+        else if(avgL >= 45) return 5;
+        else if(avgL >= 35) return 4;
+        else if(avgL >= 25) return 3;
+        else if(avgL >= 15) return 2;
+        else return 1;
+    }
+
+    // 3. تحليل الأنف المُحسّن
+    function getAdvancedNoseScore(landmarks) {
+        const nose = landmarks.getNose();
+        if(nose.length < 9) return 5;
+
+        // عرض الأنف (المنخرين) / طول الأنف
+        const noseWidth = Math.hypot(nose[4].x - nose[0].x, nose[4].y - nose[0].y);
+        const noseHeight = Math.hypot(nose[6].x - nose[3].x, nose[6].y - nose[3].y);
+        const ratio1 = noseWidth / noseHeight;
+
+        // عرض جسر الأنف (الأعلى) / عرض المنخرين
+        const bridgeWidth = Math.hypot(nose[2].x - nose[1].x, nose[2].y - nose[1].y);
+        const ratio2 = bridgeWidth / noseWidth;
+
+        let score = 10;
+        // العقوبات حسب النسب
+        if(ratio1 > 1.2) score -= 4; // أنف عريض جداً
+        else if(ratio1 > 1.0) score -= 2; // أنف عريض
+        else if(ratio1 > 0.85) score -= 1; // أنف متوسط العرض
+        
+        if(ratio2 > 0.8) score -= 3; // جسر أنف عريض جداً
+        else if(ratio2 > 0.7) score -= 1; // جسر أنف عريض
+
+        // مكافأة الأنف المتناسق
+        if(ratio1 > 0.65 && ratio1 < 0.85 && ratio2 > 0.5 && ratio2 < 0.7) score += 1;
+
+        return Math.max(1, Math.min(10, score));
+    }
+
+    // 4. تحليل الشعر المُحسّن
+    function getAdvancedHairScore(img, landmarks, box) {
+        const leftEye = landmarks.getLeftEye();
+        const rightEye = landmarks.getRightEye();
+        
+        // نحدد منطقتين للشعر: الوسط والجانب
+        const topY = Math.min(leftEye[0].y, rightEye[0].y) - 60;
+        const x = box.x;
+        const y = Math.max(0, topY);
+        const w = box.width;
+        const h = 50;
+        
+        if(w < 10 || h < 10) return 5; // صلعة أو غير مرئي
+
+        const c = document.createElement('canvas');
+        c.width = img.width; c.height = img.height;
+        const ctx = c.getContext('2d');
+        ctx.drawImage(img,0,0);
+        
+        // عينة من وسط الشعر
+        const data1 = ctx.getImageData(x + w*0.25, y, w*0.5, h).data;
+        let gray1 = [];
+        for(let i=0; i<data1.length; i+=4) gray1.push(0.299*data1[i]+0.587*data1[i+1]+0.114*data1[i+2]);
+        const mean1 = gray1.reduce((a,b)=>a+b,0)/gray1.length;
+        const variance1 = Math.sqrt(gray1.reduce((a,b)=>a+Math.pow(b-mean1,2),0)/gray1.length);
+        
+        // عينة من جانب الشعر
+        const data2 = ctx.getImageData(x, y, w*0.2, h).data;
+        let gray2 = [];
+        for(let i=0; i<data2.length; i+=4) gray2.push(0.299*data2[i]+0.587*data2[i+1]+0.114*data2[i+2]);
+        const mean2 = gray2.reduce((a,b)=>a+b,0)/gray2.length;
+        const variance2 = Math.sqrt(gray2.reduce((a,b)=>a+Math.pow(b-mean2,2),0)/gray2.length);
+
+        const avgVariance = (variance1 + variance2) / 2;
+
+        // تصنيف درجة النعومة
+        if(avgVariance < 8) return 10;      // ناعم جداً
+        else if(avgVariance < 15) return 9;  // ناعم
+        else if(avgVariance < 22) return 8;  // مموج خفيف
+        else if(avgVariance < 30) return 7;  // مموج
+        else if(avgVariance < 38) return 6;  // متوسط
+        else if(avgVariance < 46) return 5;  // مجعد خفيف
+        else if(avgVariance < 55) return 4;  // مجعد
+        else if(avgVariance < 65) return 3;  // مجعد جداً
+        else if(avgVariance < 75) return 2;  // شديد التجعد
+        else return 1;                       // ليفة
+    }
+
+    // ... (دوال التعليقات، الحفظ، المعركة، إلخ - كما هي تماماً) ...
+    function getCategory(score, gender){ /* ... */ }
+    function getComment(score, gender, isSmooth){ /* ... */ }
+    async function runScan(){ /* ... */ }
+    async function runBattle(){ /* ... */ }
+    function saveToLeaderboard(){ /* ... */ }
+    function renderLeaderboard(){ /* ... */ }
+    function clearLeaderboard(){ /* ... */ }
+
+    // ... (الدوال المساعدة) ...
+    function getAverageBrightness(img){ /* ... */ }
+    function getTextureVariance(img){ /* ... */ }
+    function getJawRatio(landmarks){ /* ... */ }
+    function getBeardRoughness(img, landmarks, box){ /* ... */ }
+</script>
+</body>
+</html>
