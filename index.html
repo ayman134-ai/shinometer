@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>مقياس الشناه برو | محلل الجمال والأنساب</title>
+    <style>
+        :root {
+            --bg: #0a0a0f;
+            --card: #14141f;
+            --gold: #d4af37;
+            --text: #e0d6c2;
+            --sub: #a09080;
+            --border: #2a2530;
+            --red: #c0392b;
+            --green: #27ae60;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Segoe UI', Tahoma, Geneva, sans-serif;
+            min-height: 100vh;
+            padding: 10px;
+            direction: rtl;
+        }
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: var(--card);
+            border-radius: 20px;
+            padding: 20px 14px;
+            border: 1px solid var(--border);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+            text-align: center;
+        }
+        .gold-text { color: var(--gold); font-weight: bold; }
+        .badge {
+            background: #1a1020;
+            color: var(--gold);
+            font-size: 11px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            display: inline-block;
+            margin: 4px;
+            border: 1px solid var(--gold);
+        }
+        .tabs {
+            display: flex;
+            gap: 6px;
+            margin: 12px 0;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .tab {
+            background: #1a1a25;
+            border: 1px solid var(--border);
+            color: var(--sub);
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .tab.active {
+            background: var(--gold);
+            color: #000;
+            font-weight: bold;
+            border-color: var(--gold);
+        }
+        .panel { display: none; }
+        .panel.active { display: block; }
+
+        .upload-zone {
+            background: #1a1a25;
+            border: 2px dashed var(--border);
+            border-radius: 16px;
+            padding: 24px 14px;
+            cursor: pointer;
+            transition: 0.3s;
+            margin: 10px 0;
+            position: relative;
+        }
+        .upload-zone:hover { border-color: var(--gold); }
+        .upload-zone img { max-width: 100%; max-height: 240px; border-radius: 12px; display: none; }
+        .upload-zone .icon { font-size: 44px; margin-bottom: 6px; }
+        .upload-zone .sub { font-size: 11px; color: var(--sub); }
+
+        .btn {
+            background: var(--gold);
+            color: #000;
+            border: none;
+            padding: 13px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin: 8px 0;
+            transition: 0.3s;
+        }
+        .btn:active { transform: scale(0.96); }
+        .btn:disabled { opacity: 0.4; pointer-events: none; }
+        .btn.red { background: var(--red); color: #fff; }
+
+        .progress-wrap {
+            display: none;
+            background: #1a1a25;
+            border-radius: 12px;
+            height: 20px;
+            margin: 12px 0;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--gold), #f1c40f);
+            transition: width 0.2s;
+            border-radius: 12px;
+        }
+        .progress-text { font-size: 12px; color: var(--gold); margin: 4px 0; }
+
+        .result-box {
+            background: #1a1420;
+            border: 1px solid var(--gold);
+            border-radius: 16px;
+            padding: 18px;
+            margin: 14px 0;
+            display: none;
+        }
+        .big-score { font-size: 58px; font-weight: 900; color: var(--gold); }
+        .category { font-size: 24px; font-weight: bold; margin: 6px 0; }
+        .comment {
+            font-size: 14px;
+            margin-top: 10px;
+            padding: 12px;
+            background: #1a1a20;
+            border-radius: 10px;
+            border-right: 3px solid var(--gold);
+            line-height: 1.6;
+        }
+        .blood-bar {
+            background: #1a1a25;
+            border-radius: 10px;
+            height: 14px;
+            margin: 8px 0;
+            overflow: hidden;
+        }
+        .blood-fill {
+            height: 100%;
+            background: var(--red);
+            border-radius: 10px;
+            transition: width 0.5s;
+        }
+
+        .leaderboard {
+            background: #1a1a25;
+            border-radius: 14px;
+            padding: 12px;
+            margin: 10px 0;
+            text-align: right;
+        }
+        .leaderboard .entry {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 13px;
+        }
+        .leaderboard .entry:last-child { border-bottom: none; }
+
+        canvas { display: none; margin-top: 10px; border-radius: 12px; border: 1px solid var(--border); }
+        #fileInput, #fileInput2 { display: none; }
+        .vs { font-size: 28px; margin: 10px 0; }
+
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <h2 style="color:var(--gold);">🧬 مقياس الشناه برو</h2>
+    <div class="badge">تحليل الجمال</div>
+    <div class="badge">كشف الأنساب</div>
+    <div class="badge">معركة الجمال</div>
+
+    <!-- الألسنة -->
+    <div class="tabs">
+        <div class="tab active" data-tab="scan">🔬 فحص فردي</div>
+        <div class="tab" data-tab="battle">⚔️ معركة 1v1</div>
+        <div class="tab" data-tab="hall">🏆 لوحة الشرف</div>
+    </div>
+
+    <!-- ========== PANEL 1: فحص فردي ========== -->
+    <div class="panel active" id="panel-scan">
+        <div class="upload-zone" onclick="document.getElementById('fileInput').click()">
+            <div id="placeholder1">
+                <div class="icon">📷</div>
+                <div>ارفع صورتك هنا</div>
+                <div class="sub">PNG, JPG, WEBP</div>
+            </div>
+            <img id="preview1" alt="معاينة">
+        </div>
+        <input type="file" id="fileInput" accept="image/*" onchange="handleFile(event, 1)">
+        <button class="btn" id="btnScan" disabled onclick="runScan()">🔬 حلل وجهي</button>
+
+        <div class="progress-wrap" id="progressWrap">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="progress-text" id="progressText"></div>
+        <canvas id="canvas1"></canvas>
+
+        <div class="result-box" id="resultBox">
+            <div style="color:var(--sub);font-size:11px;">مقدار الشناه المقدر</div>
+            <div class="big-score" id="scoreVal">-</div>
+            <div class="category" id="categoryVal"></div>
+            <div class="comment" id="commentVal"></div>
+            <div style="margin-top:10px;color:var(--sub);font-size:11px;">نسبة العبد في دمك</div>
+            <div class="blood-bar"><div class="blood-fill" id="bloodFill" style="width:0%;"></div></div>
+            <div style="font-size:12px;" id="bloodText"></div>
+            <div style="font-size:11px;color:var(--sub);margin-top:6px;" id="detailsVal"></div>
+            <button class="btn" style="margin-top:10px;" onclick="saveToLeaderboard()">📋 سجل نتيجتي</button>
+        </div>
+    </div>
+
+    <!-- ========== PANEL 2: معركة ========== -->
+    <div class="panel" id="panel-battle">
+        <div style="display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;">
+            <div style="flex:1;min-width:120px;">
+                <div class="upload-zone" onclick="document.getElementById('fileInput2').click()">
+                    <div id="placeholder2"><div class="icon">🧑</div><div>المتحدي 1</div></div>
+                    <img id="preview2" alt="متحدي 1">
+                </div>
+            </div>
+            <div class="vs">⚔️</div>
+            <div style="flex:1;min-width:120px;">
+                <div class="upload-zone" onclick="document.getElementById('fileInput3').click()">
+                    <div id="placeholder3"><div class="icon">🧑</div><div>المتحدي 2</div></div>
+                    <img id="preview3" alt="متحدي 2">
+                </div>
+            </div>
+        </div>
+        <input type="file" id="fileInput2" accept="image/*" onchange="handleFile(event, 2)">
+        <input type="file" id="fileInput3" accept="image/*" onchange="handleFile(event, 3)">
+        <button class="btn" id="btnBattle" disabled onclick="runBattle()">⚔️ ابدأ المعركة</button>
+        <div class="result-box" id="battleResult">
+            <div style="font-size:18px;font-weight:bold;" id="battleWinner"></div>
+            <div class="comment" id="battleComment"></div>
+        </div>
+    </div>
+
+    <!-- ========== PANEL 3: لوحة الشرف/العار ========== -->
+    <div class="panel" id="panel-hall">
+        <h3 style="color:var(--gold);margin:8px 0;">🏆 لوحة الشرف (الأجمل)</h3>
+        <div class="leaderboard" id="hallFame"></div>
+        <h3 style="color:var(--red);margin:8px 0;">💀 لوحة العار (الأشين)</h3>
+        <div class="leaderboard" id="hallShame"></div>
+        <button class="btn red" onclick="clearLeaderboard()">🗑️ امسح اللوحة</button>
+    </div>
+</div>
+
+<script defer src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+<script>
+    // ========== GLOBALS ==========
+    const MODEL_URL = 'https://cdn.jsdelivr.net/npm/@vladmandic/face-api/model/';
+    let modelsLoaded = false;
+    let currentResult = null; // {score, category, comment, bloodPercent, details}
+
+    async function loadModels() {
+        await faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL);
+        await faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL);
+        modelsLoaded = true;
+    }
+    loadModels().catch(e => console.warn("Models deferred"));
+
+    // ========== TABS ==========
+    document.querySelectorAll('.tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+            document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
+            if(tab.dataset.tab === 'hall') renderLeaderboard();
+        });
+    });
+
+    // ========== FILE UPLOAD ==========
+    function handleFile(event, slot) {
+        const file = event.target.files[0];
+        if(!file) return;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const preview = document.getElementById('preview' + slot);
+            const placeholder = document.getElementById('placeholder' + slot);
+            if(preview) {
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+                if(placeholder) placeholder.style.display = 'none';
+            }
+            checkButtons();
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function checkButtons() {
+        const p1 = document.getElementById('preview1').style.display === 'block';
+        const p2 = document.getElementById('preview2').style.display === 'block';
+        const p3 = document.getElementById('preview3').style.display === 'block';
+        document.getElementById('btnScan').disabled = !p1;
+        document.getElementById('btnBattle').disabled = !(p2 && p3);
+    }
+
+    // ========== CORE ANALYSIS ENGINE ==========
+    async function analyzeImage(imageId) {
+        const img = document.getElementById('preview' + imageId);
+        if(!img || !img.src) return null;
+
+        const image = new Image();
+        image.src = img.src;
+        await new Promise(r => { if(image.complete) r(); else image.onload = r; });
+
+        // Detect
+        const detections = await faceapi.detectAllFaces(image, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks();
+        if(detections.length === 0) return null;
+
+        const detection = detections[0];
+        const landmarks = detection.landmarks;
+        const box = detection.detection.box;
+
+        // Draw wireframe
+        const canvas = document.getElementById('canvas1');
+        canvas.style.display = 'block';
+        const disp = { width: image.width, height: image.height };
+        faceapi.matchDimensions(canvas, disp);
+        const resized = faceapi.resizeResults(detections, disp);
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        ctx.drawImage(image,0,0,canvas.width,canvas.height);
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 2;
+        faceapi.draw.drawFaceLandmarks(canvas, resized);
+
+        // Metrics
+        const skinL = getSkinBrightness(image, landmarks);
+        const noseRatio = getNoseRatio(landmarks);
+        const hairTex = getHairTexture(image, landmarks, box);
+
+        let skinScore, noseScore, hairScore;
+        if(skinL >= 200) skinScore = 10;
+        else if(skinL >= 170) skinScore = 9;
+        else if(skinL >= 140) skinScore = 7;
+        else if(skinL >= 100) skinScore = 5;
+        else if(skinL >= 60) skinScore = 3;
+        else skinScore = 1;
+
+        if(noseRatio <= 0.75) noseScore = 10;
+        else if(noseRatio <= 0.85) noseScore = 8;
+        else if(noseRatio <= 1.0) noseScore = 6;
+        else if(noseRatio <= 1.2) noseScore = 4;
+        else noseScore = 1;
+
+        if(hairTex < 10) hairScore = 10;
+        else if(hairTex < 20) hairScore = 8;
+        else if(hairTex < 35) hairScore = 5;
+        else if(hairTex < 55) hairScore = 3;
+        else hairScore = 1;
+
+        const final = (skinScore*0.30 + noseScore*0.25 + hairScore*0.20 + 5*0.15 + 5*0.10);
+        const score = Math.min(10, Math.max(1, Math.round(final)));
+
+        // Bloodline logic: lower beauty = higher slave blood
+        const bloodPercent = Math.round((11 - score) * 10);
+        const bloodText = bloodPercent >= 70 ? "فيك دم عبد أصيل!" :
+                          bloodPercent >= 40 ? "فيك نسبة عبد خفيفة." :
+                          "دمك نقي من العبيد.";
+
+        // Category + Comment
+        let cat, com;
+        switch(score) {
+            case 10: cat='ما شاء الله عليك'; com='يا راس العروسة! أبيض زي اللبن، أنفك سيف، شعرك حرير. ديل عرب أقحاح، العبدان ما بجوك!'; break;
+            case 9: cat='جميل'; com='حليل جمالك. أنت من السلالة النقية. العبدان دول ما عندهم الحلاوة دي.'; break;
+            case 8: cat='حلو'; com='حلو ما شاء الله. على الأقل بعيد من الشناه. العبدان قاعدين في الدرك الأسفل.'; break;
+            case 7: cat='ظريف'; com='وجهك ظريف، تمشي في السوق الناس تلتفت ليك بالغلط. الحمد لله إنك مو زنجي!'; break;
+            case 6: cat='مقبول'; com='عادي، محد يلتفت ليك. الحمد لله إنك مو زنجي أفطس.'; break;
+            case 5: cat='وسط'; com='زي الأكل البارد. العبدان شوية منك أحسن!'; break;
+            case 4: cat='شين شوية'; com='شكلك قاعد تقترب من العبدان، انتبه ليك!'; break;
+            case 3: cat='شين'; com='أنفك الأفطس وشعرك المجعد بدأ يبان. لو مشيت حتة العبدان قالوا أهلاً وسهلاً!'; break;
+            case 2: cat='شين جداً'; com='يا عبد يا ابن العبيد! شعرك زي ليفة الحمام، لونك زي الليل البهيم.'; break;
+            case 1: cat='كارثة طبيعية'; com='وجهك دا شنو؟ أنفك أفطس يمطر ويموت. شعرك دا حبل. أجدادك كانوا في الغابة!'; break;
+            default: cat='؟'; com='...';
+        }
+
+        return {
+            score, category: cat, comment: com,
+            bloodPercent, bloodText,
+            skinL: skinL.toFixed(1), noseRatio: noseRatio.toFixed(2), hairTex: hairTex.toFixed(1)
+        };
+    }
+
+    // ========== SCAN FLOW ==========
+    async function runScan() {
+        const btn = document.getElementById('btnScan');
+        const progWrap = document.getElementById('progressWrap');
+        const progFill = document.getElementById('progressFill');
+        const progText = document.getElementById('progressText');
+        const resultBox = document.getElementById('resultBox');
+
+        btn.disabled = true;
+        progWrap.style.display = 'block';
+        resultBox.style.display = 'none';
+
+        // Fake progress
+        const steps = ['جاري كشف الوجه...', 'تحليل البكسلات...', 'قياس الأنف...', 'فحص نسيج الشعر...', 'حساب نسبة العبد...', 'تجهيز التقرير...'];
+        for(let i=0; i<steps.length; i++) {
+            progText.textContent = steps[i];
+            progFill.style.width = ((i+1)/steps.length * 100) + '%';
+            await sleep(400 + Math.random()*300);
+        }
+
+        if(!modelsLoaded) await loadModels().catch(()=>{});
+        const result = await analyzeImage(1);
+
+        if(!result) {
+            alert("ما لقينا وجه بشري. جرب صورة أوضح يا زول.");
+            btn.disabled = false;
+            progWrap.style.display = 'none';
+            return;
+        }
+
+        // Display
+        document.getElementById('scoreVal').innerText = result.score + '/10';
+        document.getElementById('categoryVal').innerText = result.category;
+        document.getElementById('commentVal').innerText = result.comment;
+        document.getElementById('bloodFill').style.width = result.bloodPercent + '%';
+        document.getElementById('bloodText').innerText = result.bloodPercent + '% — ' + result.bloodText;
+        document.getElementById('detailsVal').innerText =
+            `بشرة L*=${result.skinL} | أنف=${result.noseRatio} | شعر=${result.hairTex}`;
+
+        resultBox.style.display = 'block';
+        progWrap.style.display = 'none';
+        btn.disabled = false;
+        currentResult = result;
+    }
+
+    // ========== BATTLE ==========
+    async function runBattle() {
+        const btn = document.getElementById('btnBattle');
+        const resultBox = document.getElementById('battleResult');
+        btn.disabled = true;
+        resultBox.style.display = 'none';
+
+        if(!modelsLoaded) await loadModels().catch(()=>{});
+        
+        // Analyze both (simplified: just use first image analysis for both if needed)
+        const r1 = await analyzeImage(2);
+        const r2 = await analyzeImage(3);
+
+        if(!r1 || !r2) {
+            alert("تأكد من وجهين صالحين في الصورتين.");
+            btn.disabled = false;
+            return;
+        }
+
+        let winner, loser;
+        if(r1.score > r2.score) { winner = "المتحدي 1"; loser = "المتحدي 2"; }
+        else if(r2.score > r1.score) { winner = "المتحدي 2"; loser = "المتحدي 1"; }
+        else { winner = "تعادل"; loser = null; }
+
+        document.getElementById('battleWinner').innerText =
+            winner === "تعادل" ? "🤝 تعادل! الاتنين نفس المستوى" : `👑 ${winner} فاز!`;
+        document.getElementById('battleComment').innerText =
+            winner === "تعادل" ? "الاتنين شبه بعض، لا غالب ولا مغلوب." :
+            `${winner} أجمل بمراحل. ${loser} روح استرجل.`;
+
+        resultBox.style.display = 'block';
+        btn.disabled = false;
+    }
+
+    // ========== LEADERBOARD ==========
+    function saveToLeaderboard() {
+        if(!currentResult) return;
+        let fame = JSON.parse(localStorage.getItem('fame') || '[]');
+        let shame = JSON.parse(localStorage.getItem('shame') || '[]');
+        const entry = { score: currentResult.score, category: currentResult.category, time: new Date().toLocaleString('ar-SA') };
+        if(currentResult.score >= 7) {
+            fame.push(entry);
+            fame.sort((a,b) => b.score - a.score);
+            fame = fame.slice(0, 10);
+            localStorage.setItem('fame', JSON.stringify(fame));
+        } else {
+            shame.push(entry);
+            shame.sort((a,b) => a.score - b.score);
+            shame = shame.slice(0, 10);
+            localStorage.setItem('shame', JSON.stringify(shame));
+        }
+        alert('تم تسجيل نتيجتك في اللوحة!');
+    }
+
+    function renderLeaderboard() {
+        const fame = JSON.parse(localStorage.getItem('fame') || '[]');
+        const shame = JSON.parse(localStorage.getItem('shame') || '[]');
+        document.getElementById('hallFame').innerHTML = fame.length ? fame.map((e,i) => `<div class="entry"><span>🥇 ${e.score}/10 — ${e.category}</span><span style="color:#888;font-size:10px;">${e.time}</span></div>`).join('') : '<div style="color:#888;">لا يوجد أبطال بعد</div>';
+        document.getElementById('hallShame').innerHTML = shame.length ? shame.map((e,i) => `<div class="entry"><span>💀 ${e.score}/10 — ${e.category}</span><span style="color:#888;font-size:10px;">${e.time}</span></div>`).join('') : '<div style="color:#888;">لا يوجد عبيد بعد</div>';
+    }
+
+    function clearLeaderboard() {
+        localStorage.removeItem('fame');
+        localStorage.removeItem('shame');
+        renderLeaderboard();
+    }
+
+    // ========== HELPERS ==========
+    function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+    function getSkinBrightness(img, landmarks) {
+        const jaw = landmarks.getJawOutline();
+        if(!jaw.length) return 128;
+        const x = jaw[0].x + (jaw[15].x - jaw[0].x)*0.3;
+        const y = (landmarks.getLeftEye()[1].y + jaw[5].y)/2;
+        const c = document.createElement('canvas');
+        c.width = img.width; c.height = img.height;
+        const ctx = c.getContext('2d');
+        ctx.drawImage(img,0,0);
+        const px = ctx.getImageData(Math.round(x), Math.round(y), 1, 1).data;
+        const lin = v => v/255 <= 0.04045 ? (v/255)/12.92 : Math.pow((v/255+0.055)/1.055,2.4);
+        const Y = 0.2126*lin(px[0]) + 0.7152*lin(px[1]) + 0.0722*lin(px[2]);
+        return Math.min(255, Math.max(0, Y>0.008856 ? 116*Math.pow(Y,1/3)-16 : 903.3*Y));
+    }
+
+    function getNoseRatio(landmarks) {
+        const n = landmarks.getNose();
+        if(n.length<9) return 1;
+        const w = Math.hypot(n[0].x-n[4].x, n[0].y-n[4].y);
+        const h = Math.hypot(n[6].x-n[3].x, n[6].y-n[3].y);
+        return w / h;
+    }
+
+    function getHairTexture(img, landmarks, box) {
+        const lEye = landmarks.getLeftEye();
+        const rEye = landmarks.getRightEye();
+        const topY = Math.min(lEye[0].y, rEye[0].y) - 60;
+        const x = box.x, y = Math.max(0,topY), w = box.width, h = 50;
+        if(w<10||h<10) return 25;
+        const c = document.createElement('canvas');
+        c.width = img.width; c.height = img.height;
+        const ctx = c.getContext('2d');
+        ctx.drawImage(img,0,0);
+        const data = ctx.getImageData(x,y,w,h).data;
+        let gray = [];
+        for(let i=0;i<data.length;i+=4) gray.push(0.299*data[i]+0.587*data[i+1]+0.114*data[i+2]);
+        const mean = gray.reduce((a,b)=>a+b,0)/gray.length;
+        return Math.sqrt(gray.reduce((a,b)=>a+Math.pow(b-mean,2),0)/gray.length);
+    }
+
+    // init
+    renderLeaderboard();
+</script>
+</body>
+</html>
