@@ -40,7 +40,7 @@
         .btn:disabled{ opacity:0.4; pointer-events:none; }
         .btn.red{ background: linear-gradient(135deg, #c0392b, #e74c3c); color:#fff; }
         .progress-wrap{ display:none; background:rgba(255,255,255,0.05); border-radius:14px; height:22px; margin:14px 0; overflow:hidden; }
-        .progress-fill{ height:100%; width:0%; background: linear-gradient(90deg, var(--gold), var(--gold-light)); border-radius:14px; }
+        .progress-fill{ height:100%; width:0%; background: linear-gradient(90deg, var(--gold), var(--gold-light)); border-radius:14px; transition: width 0.3s; }
         .progress-text{ font-size:12px; color:var(--gold); margin:6px 0; }
         .result-box{ background: rgba(212,175,55,0.05); border:1px solid var(--gold); border-radius:20px; padding:20px; margin:16px 0; display:none; box-shadow: 0 0 30px rgba(212,175,55,0.2); animation: glowPulse 2s infinite; }
         @keyframes glowPulse { 0%{box-shadow:0 0 20px rgba(212,175,55,0.2)} 50%{box-shadow:0 0 40px rgba(212,175,55,0.4)} 100%{box-shadow:0 0 20px rgba(212,175,55,0.2)} }
@@ -285,8 +285,8 @@
             {x: leftEye[0].x + 15, y: leftEye[0].y + 20},
             {x: rightEye[3].x - 15, y: rightEye[3].y + 20},
             {x: forehead.x, y: forehead.y - 15},
-            {x: (leftEye[0].x + rightEye[3].x)/2, y: landmarks[8].y - 10}, // الذقن
-            {x: forehead.x, y: forehead.y - 45} // الجبهة العلوية
+            {x: (leftEye[0].x + rightEye[3].x)/2, y: landmarks[8].y - 10},
+            {x: forehead.x, y: forehead.y - 45}
         ];
         let totalL = 0;
         const c = document.createElement('canvas'); c.width = img.width; c.height = img.height;
@@ -338,7 +338,7 @@
         else return 1;
     }
 
-    // --- التعليقات النهائية المتفق عليها ---
+    // --- التعليقات والألقاب النهائية ---
     function getCategory(score, gender) {
         const maleMap = {9:'عسول 😍🔥',8:'جنى عرب 😎💣',7:'وجيه 😌✨',6:'زول ساي 😐🍞',5:'عادي 🫥📉',4:'شين رانك 💀📱',3:'فار 🐀🤮',2:'قرد 🙈💔',1:'Error 🚫👹'};
         const femaleMap = {9:'مزة 😍👑',8:'عسل 🍯💃',7:'بابور 🚂🔥',6:'مقبولة 😊🌸',5:'عادية 😐🧴',4:'محتاجة شغل 🛠️📉',3:'جعفر 😬🪞',2:'افسخي 🧽😭',1:'حمد ولد 🥲🤷‍♀️'};
@@ -374,18 +374,145 @@
         return maleMap[score]||'';
     }
 
-    // --- دوال المعركة ولوحة الشرف (بدون تغيير) ---
-    async function runScan(){ /* ... implementation with loading bar and error checks ... */ }
-    async function runBattle(){ /* ... implementation comparing two results ... */ }
-    function saveToLeaderboard(){ /* ... local storage logic ... */ }
-    function renderLeaderboard(){ /* ... display logic ... */ }
-    function clearLeaderboard(){ /* ... local storage clearing ... */ }
+    // --- دوال التشغيل الرئيسية ---
+    async function runScan() {
+        const btn = document.getElementById('btnScan');
+        const progWrap = document.getElementById('progressWrap');
+        const progFill = document.getElementById('progressFill');
+        const progText = document.getElementById('progressText');
+        const resultBox = document.getElementById('resultBox');
+        
+        btn.disabled = true;
+        progWrap.style.display = 'block';
+        resultBox.style.display = 'none';
+        
+        const steps = ['جاري كشف الوجه...','تحليل 5000 بكسل بشرة...','قياس تناسق الأنف...','فحص نسيج الشعر...','حساب نسبة العبد...','تجهيز التقرير النهائي...'];
+        for(let i=0; i<steps.length; i++){
+            progText.textContent = steps[i];
+            progFill.style.width = ((i+1)/steps.length*100) + '%';
+            await new Promise(r => setTimeout(r, 400 + Math.random() * 300));
+        }
+        
+        if(!modelsLoaded) await loadModels().catch(()=>{});
+        const result = await analyzeImage(1);
+        
+        if(!result || result.error){
+            const msgs = {no_face:'ما لقينا وجه بشري! تأكد من الصورة.', multi_face:'في الصورة أكثر من وجه! الرجاء صورة بوجه واحد فقط.', too_dark:'الصورة مظلمة جداً! نحتاج إضاءة أفضل.', cartoon:'هذه الصورة تبدو كرتونية أو معدلة جداً!'};
+            alert(msgs[result?.error] || 'فشل التحليل. جرب صورة أخرى.');
+            btn.disabled = false;
+            progWrap.style.display = 'none';
+            return;
+        }
+        
+        document.getElementById('scoreVal').innerText = result.score + '/9';
+        document.getElementById('categoryVal').innerText = result.category;
+        document.getElementById('commentVal').innerText = result.comment;
+        document.getElementById('bloodFill').style.width = result.bloodPercent + '%';
+        document.getElementById('bloodText').innerText = result.bloodPercent + '%';
+        resultBox.style.display = 'block';
+        progWrap.style.display = 'none';
+        btn.disabled = false;
+        currentResult = result;
+    }
+
+    async function runBattle() {
+        const btn = document.getElementById('btnBattle');
+        const resBox = document.getElementById('battleResult');
+        btn.disabled = true; resBox.style.display = 'none';
+        if(!modelsLoaded) await loadModels().catch(()=>{});
+        
+        const r1 = await analyzeImage(2);
+        const r2 = await analyzeImage(3);
+        
+        if(!r1 || !r2 || r1.error || r2.error) {
+            alert('تأكد من وجود وجهين صالحين للتحليل.');
+            btn.disabled = false;
+            return;
+        }
+        
+        let winner, loser;
+        if(r1.score > r2.score) { winner = 'المتحدي 1'; loser = 'المتحدي 2'; }
+        else if(r2.score > r1.score) { winner = 'المتحدي 2'; loser = 'المتحدي 1'; }
+        else { winner = 'تعادل'; }
+        
+        document.getElementById('battleWinner').innerText = winner === 'تعادل' ? '🤝 تعادل!' : `👑 ${winner} فاز!`;
+        document.getElementById('battleComment').innerText = winner === 'تعادل' ? 'الاتنين نفس المستوى.' : `${winner} أجمل بمراحل. ${loser} روح استرجل.`;
+        resBox.style.display = 'block'; btn.disabled = false;
+    }
+
+    function saveToLeaderboard() {
+        if(!currentResult) return;
+        let fame = JSON.parse(localStorage.getItem('fame') || '[]');
+        let shame = JSON.parse(localStorage.getItem('shame') || '[]');
+        const entry = { score: currentResult.score, category: currentResult.category, time: new Date().toLocaleString('ar-SA') };
+        if(currentResult.score >= 7) {
+            fame.push(entry);
+            fame.sort((a,b) => b.score - a.score);
+            fame = fame.slice(0, 10);
+            localStorage.setItem('fame', JSON.stringify(fame));
+        } else {
+            shame.push(entry);
+            shame.sort((a,b) => a.score - b.score);
+            shame = shame.slice(0, 10);
+            localStorage.setItem('shame', JSON.stringify(shame));
+        }
+        alert('تم تسجيل نتيجتك!');
+    }
+
+    function renderLeaderboard() {
+        const fame = JSON.parse(localStorage.getItem('fame') || '[]');
+        const shame = JSON.parse(localStorage.getItem('shame') || '[]');
+        document.getElementById('hallFame').innerHTML = fame.length ? fame.map(e => `<div class="entry"><span>🥇 ${e.score}/9 — ${e.category}</span><span style="color:#888;font-size:10px;">${e.time}</span></div>`).join('') : '<div style="color:#888;">لا يوجد أبطال بعد</div>';
+        document.getElementById('hallShame').innerHTML = shame.length ? shame.map(e => `<div class="entry"><span>💀 ${e.score}/9 — ${e.category}</span><span style="color:#888;font-size:10px;">${e.time}</span></div>`).join('') : '<div style="color:#888;">لا يوجد بعد</div>';
+    }
+
+    function clearLeaderboard() {
+        localStorage.removeItem('fame');
+        localStorage.removeItem('shame');
+        renderLeaderboard();
+    }
 
     // --- الدوال المساعدة ---
-    function getAverageBrightness(img){ /* ... */ }
-    function getTextureVariance(img){ /* ... */ }
-    function getJawRatio(landmarks){ /* ... */ }
-    function getBeardRoughness(img, landmarks, box){ /* ... */ }
+    function getAverageBrightness(img) {
+        const c = document.createElement('canvas'), ctx = c.getContext('2d');
+        c.width = 100; c.height = 100; ctx.drawImage(img, 0, 0, 100, 100);
+        const d = ctx.getImageData(0, 0, 100, 100).data;
+        let sum = 0;
+        for(let i = 0; i < d.length; i += 4) sum += (d[i] + d[i+1] + d[i+2]) / 3;
+        return sum / (100 * 100);
+    }
+
+    function getTextureVariance(img) {
+        const c = document.createElement('canvas'), ctx = c.getContext('2d');
+        c.width = 100; c.height = 100; ctx.drawImage(img, 0, 0, 100, 100);
+        const d = ctx.getImageData(0, 0, 100, 100).data;
+        let gray = [];
+        for(let i = 0; i < d.length; i += 4) gray.push(0.299*d[i] + 0.587*d[i+1] + 0.114*d[i+2]);
+        const mean = gray.reduce((a,b) => a + b, 0) / gray.length;
+        return Math.sqrt(gray.reduce((a,b) => a + Math.pow(b - mean, 2), 0) / gray.length);
+    }
+
+    function getJawRatio(landmarks) {
+        const jaw = landmarks.getJawOutline();
+        if(jaw.length < 17) return 0.75;
+        const w = Math.hypot(jaw[0].x - jaw[16].x, jaw[0].y - jaw[16].y);
+        const h = Math.hypot(jaw[8].x - (jaw[0].x + jaw[16].x) / 2, jaw[8].y - (jaw[0].y + jaw[16].y) / 2);
+        return w / (h * 2);
+    }
+
+    function getBeardRoughness(img, landmarks, box) {
+        const nose = landmarks.getNose();
+        if(nose.length < 7) return 10;
+        const x = box.x, y = nose[6].y + 5, w = box.width, h = box.height * 0.25;
+        const c = document.createElement('canvas');
+        c.width = img.width; c.height = img.height;
+        const ctx = c.getContext('2d'); ctx.drawImage(img, 0, 0);
+        const d = ctx.getImageData(x, Math.round(y), Math.round(w), Math.round(h)).data;
+        let gray = [];
+        for(let i = 0; i < d.length; i += 4) gray.push(0.299*d[i] + 0.587*d[i+1] + 0.114*d[i+2]);
+        const mean = gray.reduce((a,b) => a + b, 0) / gray.length;
+        return Math.sqrt(gray.reduce((a,b) => a + Math.pow(b - mean, 2), 0) / gray.length);
+    }
 </script>
 </body>
 </html>
