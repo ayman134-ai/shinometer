@@ -1,1 +1,310 @@
-
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>مقياس الشناه برو | Shinometer Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #050508;
+            --card-bg: rgba(18,18,28,0.85);
+            --gold: #d4af37;
+            --gold-light: #f0d060;
+            --text: #e0d6c2;
+            --sub: #a09080;
+            --border: rgba(212,175,55,0.3);
+            --red: #c0392b;
+        }
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Cairo', sans-serif;
+            min-height:100vh;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            padding:16px;
+            direction:rtl;
+        }
+        .container {
+            max-width:460px;
+            width:100%;
+            background:var(--card-bg);
+            backdrop-filter:blur(15px);
+            -webkit-backdrop-filter:blur(15px);
+            border-radius:28px;
+            padding:24px 16px;
+            border:1px solid var(--border);
+            box-shadow:0 20px 50px rgba(0,0,0,0.6);
+            text-align:center;
+        }
+        .gold-text{ color:var(--gold); font-weight:bold; }
+        .badge{
+            background:rgba(212,175,55,0.1); color:var(--gold); font-size:11px;
+            padding:4px 12px; border-radius:20px; display:inline-block; margin:4px;
+            border:1px solid var(--border);
+        }
+        .tabs{ display:flex; gap:8px; margin:16px 0; flex-wrap:wrap; justify-content:center; }
+        .tab{
+            background:rgba(255,255,255,0.05); border:1px solid var(--border);
+            color:var(--sub); padding:8px 16px; border-radius:24px; font-size:13px;
+            cursor:pointer; transition:0.2s;
+        }
+        .tab.active{ background:var(--gold); color:#000; font-weight:700; border-color:var(--gold); }
+        .panel{ display:none; }
+        .panel.active{ display:block; }
+        .upload-zone{
+            background:rgba(255,255,255,0.03); border:2px dashed var(--border);
+            border-radius:20px; padding:28px 16px; cursor:pointer; transition:0.2s;
+            margin:12px 0; position:relative;
+        }
+        .upload-zone:hover{ border-color:var(--gold); }
+        .upload-zone img{ max-width:100%; max-height:250px; border-radius:14px; display:none; }
+        .btn{
+            background:linear-gradient(135deg, var(--gold), #b8942e); color:#000;
+            border:none; padding:14px; border-radius:14px; font-size:16px; font-weight:700;
+            cursor:pointer; width:100%; margin:10px 0; transition:0.2s;
+        }
+        .btn:active{ transform:scale(0.97); }
+        .btn:disabled{ opacity:0.4; pointer-events:none; }
+        .progress-wrap{
+            display:none; background:rgba(255,255,255,0.05); border-radius:12px;
+            height:16px; margin:12px 0; overflow:hidden; border:1px solid var(--border);
+        }
+        .progress-fill{
+            height:100%; width:0%; background:linear-gradient(90deg, var(--gold), var(--gold-light));
+            border-radius:12px; transition:width 0.2s;
+        }
+        .progress-text{ font-size:12px; color:var(--gold); margin:4px 0; }
+        .result-box{
+            background:rgba(212,175,55,0.05); border:1px solid var(--gold);
+            border-radius:20px; padding:20px; margin:16px 0; display:none;
+            box-shadow:0 0 25px rgba(212,175,55,0.2);
+        }
+        .big-score{ font-size:56px; font-weight:900; color:var(--gold); }
+        .category{ font-size:24px; font-weight:700; margin:4px 0; }
+        .comment{
+            font-size:15px; margin:12px 0; padding:14px; background:rgba(0,0,0,0.3);
+            border-radius:12px; border-right:3px solid var(--gold); line-height:1.6;
+        }
+        .blood-bar{ background:rgba(255,255,255,0.05); border-radius:8px; height:10px; margin:8px 0; overflow:hidden; }
+        .blood-fill{ height:100%; background:var(--red); border-radius:8px; transition:width 0.4s; }
+        .details-grid{
+            display:flex; flex-wrap:wrap; justify-content:space-between; margin:10px 0; gap:10px;
+        }
+        .detail-item{
+            background:rgba(255,255,255,0.03); border-radius:12px; padding:8px;
+            flex:1 1 45%; border:1px solid var(--border); font-size:13px;
+        }
+        .detail-value{ color:var(--gold); font-weight:bold; font-size:16px; }
+        .gender-btns{ display:flex; gap:8px; justify-content:center; margin:10px 0; }
+        .gender-btn{
+            background:rgba(255,255,255,0.05); border:1px solid var(--border);
+            color:var(--sub); padding:8px 16px; border-radius:20px; font-size:13px;
+            cursor:pointer; transition:0.2s;
+        }
+        .gender-btn.active{ background:var(--gold); color:#000; border-color:var(--gold); }
+        .vs{ font-size:30px; margin:8px 0; color:var(--gold); }
+        #fileInput,#fileInput2,#fileInput3{ display:none; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2 style="color:var(--gold); font-weight:900; font-size:24px; margin-bottom:4px;">🧬 مقياس الشناه برو</h2>
+    <div class="badge">تحليل جيني دقيق</div>
+    <div class="badge">كشف الأنساب 2.0</div>
+    <div class="badge">VIP Skin Lab</div>
+    <div class="tabs">
+        <div class="tab active" data-tab="scan">🔬 فحص فردي</div>
+        <div class="tab" data-tab="battle">⚔️ معركة 1v1</div>
+    </div>
+    <div class="panel active" id="panel-scan">
+        <div class="gender-btns">
+            <span class="gender-btn active" data-gender="male">🧔🏻 رجال</span>
+            <span class="gender-btn" data-gender="female">👩🏻 بنت</span>
+        </div>
+        <div class="upload-zone" onclick="document.getElementById('fileInput').click()">
+            <div id="placeholder1">📷 ارفع صورتك هنا</div>
+            <img id="preview1" alt="preview">
+        </div>
+        <input type="file" id="fileInput" accept="image/*" onchange="handleFile(event,1)" style="display:none;">
+        <button class="btn" id="btnScan" disabled onclick="runScan()">🔬 حلل وجهي</button>
+        <div class="progress-wrap" id="progressWrap"><div class="progress-fill" id="progressFill"></div></div>
+        <div class="progress-text" id="progressText"></div>
+        <div class="result-box" id="resultBox">
+            <div style="color:var(--sub);font-size:11px;">الدرجة الكلية من 100</div>
+            <div class="big-score" id="scoreVal">-</div>
+            <div class="category" id="categoryVal"></div>
+            <div class="comment" id="commentVal"></div>
+            <div class="details-grid" id="detailsGrid"></div>
+            <div style="margin-top:12px;color:var(--sub);font-size:11px;">نسبة العبد في الدم</div>
+            <div class="blood-bar"><div class="blood-fill" id="bloodFill" style="width:0%;"></div></div>
+            <div style="font-size:13px;color:var(--red);" id="bloodText"></div>
+        </div>
+    </div>
+    <div class="panel" id="panel-battle">
+        <div style="display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;">
+            <div style="flex:1;min-width:120px;">
+                <div class="upload-zone" onclick="document.getElementById('fileInput2').click()">
+                    <div id="placeholder2"><div class="icon">🧑</div><div>المتحدي 1</div></div>
+                    <img id="preview2" alt="p1">
+                </div>
+            </div>
+            <div class="vs">⚔️</div>
+            <div style="flex:1;min-width:120px;">
+                <div class="upload-zone" onclick="document.getElementById('fileInput3').click()">
+                    <div id="placeholder3"><div class="icon">🧑</div><div>المتحدي 2</div></div>
+                    <img id="preview3" alt="p2">
+                </div>
+            </div>
+        </div>
+        <input type="file" id="fileInput2" accept="image/*" onchange="handleFile(event,2)" style="display:none;">
+        <input type="file" id="fileInput3" accept="image/*" onchange="handleFile(event,3)" style="display:none;">
+        <button class="btn" id="btnBattle" disabled onclick="runBattle()">⚔️ ابدأ المعركة</button>
+        <div class="result-box" id="battleResult">
+            <div style="font-size:20px;font-weight:bold;" id="battleWinner"></div>
+            <div class="comment" id="battleComment"></div>
+        </div>
+    </div>
+</div>
+<script>
+    let selectedGender = 'male';
+    let originalImages = { 1: null, 2: null, 3: null };
+    document.querySelectorAll('.gender-btn').forEach(b => {
+        b.addEventListener('click', function() {
+            document.querySelectorAll('.gender-btn').forEach(x => x.classList.remove('active'));
+            this.classList.add('active');
+            selectedGender = this.dataset.gender;
+        });
+    });
+    document.querySelectorAll('.tab').forEach(t => {
+        t.addEventListener('click', () => {
+            document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+            t.classList.add('active');
+            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+            document.getElementById('panel-' + t.dataset.tab).classList.add('active');
+        });
+    });
+    function handleFile(event, slot) {
+        const file = event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const img = new Image();
+            img.onload = () => {
+                originalImages[slot] = { element: img };
+                const preview = document.getElementById('preview' + slot);
+                const placeholder = document.getElementById('placeholder' + slot);
+                if (preview) { preview.src = e.target.result; preview.style.display = 'block'; }
+                if (placeholder) placeholder.style.display = 'none';
+                checkButtons();
+            };
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+    function checkButtons() {
+        document.getElementById('btnScan').disabled = !originalImages[1];
+        document.getElementById('btnBattle').disabled = !(originalImages[2] && originalImages[3]);
+    }
+    function analyzeImage(img) {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        const maxSize = 200;
+        let w = img.width, h = img.height;
+        if (w > h) { if (w > maxSize) { h = h * maxSize / w; w = maxSize; } }
+        else { if (h > maxSize) { w = w * maxSize / h; h = maxSize; } }
+        canvas.width = w; canvas.height = h;
+        ctx.drawImage(img, 0, 0, w, h);
+        const imageData = ctx.getImageData(0, 0, w, h);
+        const d = imageData.data;
+        let totalBrightness = 0, totalContrast = 0, totalSaturation = 0, pixelCount = 0;
+        for (let i = 0; i < d.length; i += 4) {
+            const r = d[i], g = d[i+1], b = d[i+2];
+            const brightness = (r + g + b) / 3;
+            totalBrightness += brightness;
+            const maxC = Math.max(r,g,b), minC = Math.min(r,g,b);
+            totalSaturation += (maxC - minC);
+            pixelCount++;
+        }
+        for (let i = 0; i < d.length - 4; i += 4) {
+            totalContrast += Math.abs(d[i] - d[i+4]);
+        }
+        const avgBrightness = totalBrightness / pixelCount;
+        const avgSaturation = totalSaturation / pixelCount;
+        const avgContrast = totalContrast / (pixelCount * 4);
+        const symmetry = Math.min(25, Math.max(5, Math.round(avgContrast * 0.8)));
+        const nose = Math.min(25, Math.max(5, Math.round(avgSaturation * 0.7)));
+        const hair = Math.min(25, Math.max(5, Math.round(Math.abs(128 - avgBrightness) * 0.2)));
+        const skin = Math.min(25, Math.max(5, Math.round((255 - avgBrightness) * 0.15)));
+        const final = symmetry + nose + hair + skin;
+        const score9 = Math.min(9, Math.max(1, Math.round(final / 11.11)));
+        const bloodPercent = Math.round((11 - score9) * 10);
+        return { score: final, score9, symmetry, nose, hair, skin, bloodPercent };
+    }
+    function getCategory(score, gender) {
+        if (gender === 'female') {
+            const f = {9:'ملكة 👑✨',8:'مزه 😍🔥',7:'عسل 🍯',6:'ظريفة 🌸',5:'مقبولة 🙂',4:'عادية 😐',3:'محتاجة شغل 🛠️',2:'افسخي 😭',1:'الجمال جمال الروح 💖'};
+            return f[score] || '';
+        }
+        const m = {9:'عسول 😍🔥',8:'وجيه يا زولي ✨',7:'سمح 😊',6:'عادي 😐',5:'نص نص 🤷‍♂️',4:'رائع 💀',3:'فار 🐀',2:'قرد 🙈',1:'Error 🚫'};
+        return m[score] || '';
+    }
+    function getComment(score, gender) {
+        if (gender === 'female') {
+            const c = {9:'ما شاء الله قمر عديل، الجمال كلو اتجمع فيك. العين ما تملاك ✨',8:'سمحة والله، وشك فيه قبول رهيب. أي زول يشوفك يقول ما شاء الله 🔥',7:'حلوة وملامحك ناعمة. بس محتاجة تطلعي جمالك زيادة، ما تدسيه 🍯',6:'ظريفة ولطيفة، ملامحك حلوة. بس لو اهتميتي بنفسك شوية حتبقي خطيرة 🌸',5:'انتي مقبولة والله، ما كعبة. وشك فيه سماحة بس محتاج شوية اهتمام 🙂',4:'جمالك عادي ما بطال. ركزي على استايلك ولبسك وبتطلعي زي البنات 😐',3:'يا اختي انتي محتاجة تهتمي بروحك شوية.. لسه في شويه امل 🤏',2:'جازفيها كريمات ساي.. م بتتجازفي؟ الجمال دا داير اجتهاد برضو 😭',1:'يا بنت الناس الجمال ما كل شي. شخصيتك أهم من أي وش 💖'};
+            return c[score] || '';
+        }
+        const c = {9:'يا زول انت وسيم لدرجة الخيال. البنات لو شافوك بتجلط. ده ما وش ده لوحة 😍🔥',8:'سمح والله، وشك فيه قبول رهيب. أي زول يشوفك يقول ما شاء الله ✨',7:'شكلك سمح لكن ما عامل فرق. يعني تدخل وتطلع مافي زول ينتبه 😊',6:'زول عادي، بتلقى زيك في أي صف عيش. لا بتضر لا بتنفع 😐',5:'شكلك نص نص لا سمح لا شين، لو فسخت امورك بتمش 🤷‍♂️',4:'يا زول وشك ده يجيب الهم. محتاج تهتم بنفسك شوية 💀',3:'بسم الله الرحمن الرحيم.. شكلك كعب لدرجة لو المراية بتتكلم كان سبت ليك 🐀',2:'الواحد يشوفك يقول الحمدلله على كل حال 🙈',1:'هوي يا عب.. تقيم شنو؟ امش شوف ليك موتر واشتغل.. لو الوسامة امتحان جبت صفر 🚫'};
+        return c[score] || '';
+    }
+    async function runScan() {
+        const imgData = originalImages[1];
+        if (!imgData) return;
+        const btn = document.getElementById('btnScan');
+        const pw = document.getElementById('progressWrap');
+        const pf = document.getElementById('progressFill');
+        const pt = document.getElementById('progressText');
+        const rb = document.getElementById('resultBox');
+        btn.disabled = true;
+        pw.style.display = 'block';
+        pf.style.width = '0%';
+        rb.style.display = 'none';
+        const steps = ['🔍 تحليل الصورة...', '📐 قياس الألوان...', '✨ تقييم الجودة...', '🧬 حساب النتيجة...'];
+        for (let i = 0; i < steps.length; i++) {
+            pt.textContent = steps[i];
+            pf.style.width = ((i+1)/steps.length*100) + '%';
+            await new Promise(r => setTimeout(r, 500));
+        }
+        const result = analyzeImage(imgData.element);
+        document.getElementById('scoreVal').textContent = result.score + '/100';
+        document.getElementById('categoryVal').textContent = getCategory(result.score9, selectedGender);
+        document.getElementById('commentVal').textContent = getComment(result.score9, selectedGender);
+        document.getElementById('detailsGrid').innerHTML = `
+            <div class="detail-item">✨ تناسق <span class="detail-value">${result.symmetry}/25</span></div>
+            <div class="detail-item">👃 أنف <span class="detail-value">${result.nose}/25</span></div>
+            <div class="detail-item">💇 شعر <span class="detail-value">${result.hair}/25</span></div>
+            <div class="detail-item">🎨 بشرة <span class="detail-value">${result.skin}/25</span></div>
+        `;
+        document.getElementById('bloodFill').style.width = result.bloodPercent + '%';
+        document.getElementById('bloodText').textContent = result.bloodPercent + '%';
+        rb.style.display = 'block';
+        pw.style.display = 'none';
+        btn.disabled = false;
+    }
+    async function runBattle() {
+        const imgData2 = originalImages[2], imgData3 = originalImages[3];
+        if (!imgData2 || !imgData3) return;
+        const rb = document.getElementById('battleResult');
+        const r1 = analyzeImage(imgData2.element);
+        const r2 = analyzeImage(imgData3.element);
+        let win = r1.score > r2.score ? 'المتحدي 1' : r2.score > r1.score ? 'المتحدي 2' : 'تعادل';
+        document.getElementById('battleWinner').textContent = win === 'تعادل' ? '🤝 تعادل!' : `👑 ${win} فاز!`;
+        document.getElementById('battleComment').textContent = win === 'تعادل' ? 'الاتنين نفس المستوى بالضبط!' : `${win} أجمل بمراحل.`;
+        rb.style.display = 'block';
+    }
+</script>
+</body>
+</html>
